@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="CSLRFIDMobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:view="clr-namespace:CSLRFIDMobile.View"
+    Title="CSLRFIDMobile"
+    Shell.FlyoutBehavior="Disabled">
+
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Style x:Key="BaseStyle" TargetType="Element">
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="Shell.ForegroundColor" Value="{OnPlatform WinUI={StaticResource Primary}, Default=White}" />
+                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="{AppThemeBinding Dark=#95FFFFFF, Light=#95000000}" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Dark={StaticResource DarkBackground}, Light={StaticResource LightBackground}}" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="{AppThemeBinding Dark={StaticResource LightBackground}, Light={StaticResource DarkBackground}}" />
+                <Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Dark=#95FFFFFF, Light=#95000000}" />
+                <Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Dark={StaticResource LightBackground}, Light={StaticResource DarkBackground}}" />
+            </Style>
+            <Style
+                ApplyToDerivedTypes="True"
+                BasedOn="{StaticResource BaseStyle}"
+                TargetType="ShellItem" />
+        </ResourceDictionary>
+    </Shell.Resources>
+
+    <Shell.TitleView>
+        <HorizontalStackLayout Spacing="10" VerticalOptions="FillAndExpand">
+            <Image
+                x:Name="TitleBarImage"
+                HeightRequest="32"
+                Source="csl.svg" />
+            <Label
+                x:Name="TitleBarText"
+                Padding="5"
+                FontSize="Title"
+                HorizontalOptions="EndAndExpand"
+                HorizontalTextAlignment="End"
+                Text="RFID Reader"
+                TextColor="{StaticResource White}"
+                VerticalTextAlignment="Center" />
+        </HorizontalStackLayout>
+    </Shell.TitleView>
+
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate view:PageMainMenu}"
+        Route="PageMainMenu" />
+
+    <ShellContent
+        Title="Select Reader"
+        ContentTemplate="{DataTemplate view:PageDeviceList}"
+        Route="PageDeviceList" />
+
+</Shell>

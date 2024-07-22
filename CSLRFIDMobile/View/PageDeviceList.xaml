@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mvvm:TinyView
+    x:Class="CSLRFIDMobile.View.PageDeviceList"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:helper="clr-namespace:CSLRFIDMobile.Helper"
+    xmlns:model="clr-namespace:CSLRFIDMobile.Model"
+    xmlns:mvvm="clr-namespace:TinyMvvm;assembly=TinyMvvm.Maui"
+    xmlns:viewmodel="clr-namespace:CSLRFIDMobile.ViewModel"
+    Title="Select Device">
+    <mvvm:TinyView.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="DeviceItemTemplate">
+                <helper:CustomViewCell SelectedBackgroundColor="{StaticResource PrimaryDark}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.Triggers>
+                            <DataTrigger
+                                Binding="{Binding IsConnected}"
+                                TargetType="Grid"
+                                Value="true">
+                                <Setter Property="BackgroundColor" Value="#1A00FF00" />
+                            </DataTrigger>
+                        </Grid.Triggers>
+
+                        <StackLayout Orientation="Vertical" VerticalOptions="Center">
+                            <Label
+                                FontSize="Large"
+                                Text="{Binding Name}"
+                                TextColor="Gray" />
+                            <Label
+                                FontSize="Small"
+                                Text="{Binding IdString}"
+                                TextColor="Gray" />
+                            <Label
+                                FontSize="Small"
+                                Text="{Binding Model}"
+                                TextColor="Gray" />
+                        </StackLayout>
+
+                        <Label
+                            Grid.Column="1"
+                            Margin="10"
+                            Text="{Binding Rssi}"
+                            VerticalTextAlignment="Center" />
+                    </Grid>
+                </helper:CustomViewCell>
+            </DataTemplate>
+        </ResourceDictionary>
+    </mvvm:TinyView.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackLayout
+            Padding="10"
+            BackgroundColor="{StaticResource PrimaryDark}"
+            IsVisible="{Binding IsStateOn, Converter={StaticResource InverseBoolean}}">
+            <Label
+                FontSize="18"
+                HorizontalTextAlignment="Center"
+                Text="{Binding StateText}" />
+        </StackLayout>
+
+        <ListView
+            Grid.Row="1"
+            ItemTemplate="{StaticResource DeviceItemTemplate}"
+            ItemsSource="{Binding Devices}"
+            RowHeight="80"
+            SelectedItem="{Binding SelectedDevice, Mode=TwoWay}" />
+
+        <StackLayout Grid.Row="2">
+            <Label HorizontalOptions="Center" Text="For CS108, Bluetooth 4.0 or 5.0 Phone" />
+            <Label HorizontalOptions="Center" Text="For CS710S, Only Bluetooth 5.0 Phone" />
+        </StackLayout>
+
+        <StackLayout Grid.Row="3" Orientation="Horizontal">
+            <Button
+                Command="{Binding PerformScanForDevicesCommand}"
+                HorizontalOptions="EndAndExpand"
+                Text="{Binding Path=ScanLabelText}" />
+            <ActivityIndicator
+                HeightRequest="24"
+                HorizontalOptions="End"
+                IsRunning="{Binding IsScanning}"
+                VerticalOptions="Center"
+                WidthRequest="24" />
+        </StackLayout>
+
+
+    </Grid>
+</mvvm:TinyView>

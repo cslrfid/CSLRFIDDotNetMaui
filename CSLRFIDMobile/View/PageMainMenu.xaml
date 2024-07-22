@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mvvm:TinyView
+    x:Class="CSLRFIDMobile.View.PageMainMenu"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:model="clr-namespace:CSLRFIDMobile.Model"
+    xmlns:mvvm="clr-namespace:TinyMvvm;assembly=TinyMvvm.Maui"
+    xmlns:viewmodel="clr-namespace:CSLRFIDMobile.ViewModel"
+    Title="Home">
+    <Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*,*,100,30">
+        <Frame
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="5,5,2.5,2.5"
+            Padding="0"
+            BorderColor="Transparent"
+            CornerRadius="8">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OnInventoryButtonCommand}" CommandParameter="1" />
+            </Frame.GestureRecognizers>
+            <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7.5*" />
+                    <RowDefinition Height="2.5*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="inventory.svg" />
+                <Label
+                    Grid.Row="1"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Inventory"
+                    TextColor="{StaticResource White}" />
+            </Grid>
+        </Frame>
+        <Frame
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="2.5,5,5,2.5"
+            Padding="0"
+            BorderColor="Transparent"
+            CornerRadius="8">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OnReadWriteButtonCommand}" CommandParameter="1" />
+            </Frame.GestureRecognizers>
+            <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7.5*" />
+                    <RowDefinition Height="2.5*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="write.svg" />
+                <Label
+                    Grid.Row="1"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Read/Write"
+                    TextColor="{StaticResource White}" />
+            </Grid>
+        </Frame>
+        <Frame
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="5,2.5,2.5,2.5"
+            Padding="0"
+            BorderColor="Transparent"
+            CornerRadius="8">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OnRegisterTagButtonCommand}" CommandParameter="1" />
+            </Frame.GestureRecognizers>
+            <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7.5*" />
+                    <RowDefinition Height="2.5*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="register.svg" />
+                <Label
+                    Grid.Row="1"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Register"
+                    TextColor="{StaticResource White}" />
+            </Grid>
+        </Frame>
+        <Frame
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="2.5,2.5,5,2.5"
+            Padding="0"
+            BorderColor="Transparent"
+            CornerRadius="8">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OnSpecialFuncButtonCommand}" CommandParameter="1" />
+            </Frame.GestureRecognizers>
+            <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7.5*" />
+                    <RowDefinition Height="2.5*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="function.svg" />
+                <Label
+                    Grid.Row="1"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Special Functions"
+                    TextColor="{StaticResource White}" />
+            </Grid>
+        </Frame>
+        <Frame
+            Grid.Row="2"
+            Grid.Column="0"
+            Margin="5,2.5,2.5,2.5"
+            Padding="0"
+            BorderColor="Transparent"
+            CornerRadius="8">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OnGeigerButtonCommand}" CommandParameter="1" />
+            </Frame.GestureRecognizers>
+            <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7.5*" />
+                    <RowDefinition Height="2.5*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="search.svg" />
+                <Label
+                    Grid.Row="1"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Geiger Search"
+                    TextColor="{StaticResource White}" />
+            </Grid>
+        </Frame>
+        <Frame
+            Grid.Row="2"
+            Grid.Column="2"
+            Margin="2.5,2.5,5,2.5"
+            Padding="0"
+            BorderColor="Transparent"
+            CornerRadius="8">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OnSettingButtonCommand}" CommandParameter="1" />
+            </Frame.GestureRecognizers>
+            <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7.5*" />
+                    <RowDefinition Height="2.5*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="settings.svg" />
+                <Label
+                    Grid.Row="1"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Settings"
+                    TextColor="{StaticResource White}" />
+            </Grid>
+        </Frame>
+        <Frame
+            Grid.Row="3"
+            Grid.Column="0"
+            Margin="5,2.5,2.5,2.5"
+            Padding="0"
+            BorderColor="Transparent"
+            CornerRadius="8">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OnSecurityButtonCommand}" CommandParameter="1" />
+            </Frame.GestureRecognizers>
+            <Grid BackgroundColor="{StaticResource Primary}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7.5*" />
+                    <RowDefinition Height="2.5*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="security.svg" />
+                <Label
+                    Grid.Row="1"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Security"
+                    TextColor="{StaticResource White}" />
+            </Grid>
+        </Frame>
+        <Frame
+            Grid.Row="3"
+            Grid.Column="1"
+            Margin="2.5,2.5,5,2.5"
+            Padding="0"
+            BorderColor="Transparent"
+            CornerRadius="8">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OnFilterButtonCommand}" CommandParameter="1" />
+            </Frame.GestureRecognizers>
+            <Grid BackgroundColor="{StaticResource Primary}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7.5*" />
+                    <RowDefinition Height="2.5*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="filter.svg" />
+                <Label
+                    Grid.Row="1"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="RFID Filter"
+                    TextColor="{StaticResource White}" />
+            </Grid>
+        </Frame>
+
+        <Frame
+            Grid.Row="4"
+            Grid.ColumnSpan="2"
+            Margin="5,2.5,5,2.5"
+            Padding="0"
+            BorderColor="{StaticResource Black}"
+            CornerRadius="8">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ConnectButtonCommand}" CommandParameter="1" />
+            </Frame.GestureRecognizers>
+            <Grid BackgroundColor="{StaticResource Primary}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="Medium"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="{Binding ConnectedButton}"
+                    TextColor="{Binding ConnectedButtonTextColor}"
+                    VerticalOptions="CenterAndExpand" />
+            </Grid>
+        </Frame>
+
+        <StackLayout
+            Grid.Row="5"
+            Grid.ColumnSpan="2"
+            Margin="5,0,5,0"
+            Orientation="Horizontal">
+            <Image Source="battery.svg" />
+            <Label Text="{Binding LabelVoltage}" TextColor="{Binding LabelVoltageTextColor}" />
+        </StackLayout>
+    </Grid>
+
+
+</mvvm:TinyView>
