@@ -10,10 +10,23 @@ using Controls.UserDialogs.Maui;
 
 namespace CSLRFIDMobile.Services
 {
+    public class CSLBatteryLevelEventArgs : EventArgs
+    {
+        public string BatteryValue { get; set; } = String.Empty;
+        public bool IsLowBattery { get; set; } = false;
+
+        public CSLBatteryLevelEventArgs(string batteryValue, bool isLowBattery)
+        {
+            BatteryValue = batteryValue;
+            IsLowBattery = isLowBattery;
+        }   
+    }
+
     public class CSLReaderService
     {
         public HighLevelInterface? reader = new HighLevelInterface();
         public CONFIG? config;
+        public event EventHandler<CSLBatteryLevelEventArgs>? BatteryLevelEvent;
 
         private readonly IUserDialogs _userDialogs;
         public IBluetoothLE? bluetoothLe;
@@ -57,10 +70,10 @@ namespace CSLRFIDMobile.Services
                 if (dev == null)
                     return false;
 
-                await Connect(dev, device.BTServiceType);
-
                 //wait unit initialization completed otherwise will be timed out
                 IsInitializationCompleted = false;
+
+                await Connect(dev, device.BTServiceType);
                 DateTime timer = DateTime.Now;
                 while ((DateTime.Now - timer).TotalSeconds < 10.00 )
                 {
@@ -96,7 +109,7 @@ namespace CSLRFIDMobile.Services
             config!.readerID = _device.Id.ToString();
         }      
 
-        void SetEvent(bool onoff)
+        public void SetEvent(bool onoff)
         {
             reader?.CancelEventOnReaderStateChanged();
             reader?.notification.ClearEventHandler(); // Key Button event handler
@@ -106,9 +119,13 @@ namespace CSLRFIDMobile.Services
             if (onoff)
             {
                 reader!.OnReaderStateChanged += new EventHandler<CSLibrary.Events.OnReaderStateChangedEventArgs>(ReaderStateCChangedEvent!);
-                reader!.notification.OnVoltageEvent += new EventHandler<CSLibrary.Notification.VoltageEventArgs>(VoltageEvent!);
                 reader!.rfid.OnStateChanged += new EventHandler<CSLibrary.Events.OnStateChangedEventArgs>(StateChangedEvent!);
             }
+        }
+
+        public void EnableBatteryEvent()
+        {
+            reader!.notification.OnVoltageEvent += new EventHandler<CSLibrary.Notification.VoltageEventArgs>(VoltageEvent!);
         }
 
         void ReaderStateCChangedEvent(object sender, CSLibrary.Events.OnReaderStateChangedEventArgs e)
@@ -140,11 +157,8 @@ namespace CSLRFIDMobile.Services
         {
             if (e.state == CSLibrary.Constants.RFState.INITIALIZATION_COMPLETE)
             {
-                {
-
-                    if (reader!.rfid.GetModelName() == "CS710S-1" && config!.RFID_Profile == 244)
-                        config.RFID_Profile = 241;
-                }
+                if (reader!.rfid.GetModelName() == "CS710S-1" && config!.RFID_Profile == 244)
+                    config.RFID_Profile = 241;
 
                 // System Setting
                 _batteryLow = false;
@@ -184,41 +198,45 @@ namespace CSLRFIDMobile.Services
 
         void VoltageEvent(object sender, CSLibrary.Notification.VoltageEventArgs e)
         {
-            if (e.Voltage == 0xffff)
+            try
             {
-                _labelVoltage = String.Empty;
-            }
-            else
-            {
-                double voltage = (double)e.Voltage / 1000;
-
+                if (e.Voltage == 0xffff)
                 {
+                    _labelVoltage = String.Empty;
+                }
+                else
+                {
+                    double voltage = (double)e.Voltage / 1000;
+
                     var batlow = ClassBattery.BatteryLow(voltage);
 
                     if (_batteryLow && batlow == ClassBattery.BATTERYLEVELSTATUS.NORMAL)
                     {
                         _batteryLow = false;
                     }
-                    else
-                    if (!_batteryLow && batlow != ClassBattery.BATTERYLEVELSTATUS.NORMAL)
+                    else if (!_batteryLow && batlow != ClassBattery.BATTERYLEVELSTATUS.NORMAL)
                     {
                         _batteryLow = true;
-
-                        if (batlow == ClassBattery.BATTERYLEVELSTATUS.LOW)
-                            _userDialogs.ShowSnackbar("20% Battery Life Left, Please Recharge RFID Reader or Replace Freshly Charged Battery");
                     }
-                }
 
-                switch (config?.BatteryLevelIndicatorFormat)
-                {
-                    case 0:
-                        _labelVoltage = voltage.ToString("0.000") + "v";
-                        break;
+                    switch (config?.BatteryLevelIndicatorFormat)
+                    {
+                        case 0:
+                            _labelVoltage = voltage.ToString("0.000") + "v";
+                            break;
 
-                    default:
-                        _labelVoltage = ClassBattery.Voltage2Percent(voltage).ToString("0") + "%";
-                        break;
+                        default:
+                            _labelVoltage = ClassBattery.Voltage2Percent(voltage).ToString("0") + "%";
+                            break;
+                    }
+
+                    BatteryLevelEvent?.Invoke(this, new CSLBatteryLevelEventArgs(_labelVoltage, _batteryLow));
                 }
+            }
+            catch (Exception ex)  
+            {
+                CSLibrary.Debug.WriteLine($"Error reading battery level reporting: {ex}");
+                BatteryLevelEvent?.Invoke(this, new CSLBatteryLevelEventArgs(String.Empty, false));
             }
         }
 

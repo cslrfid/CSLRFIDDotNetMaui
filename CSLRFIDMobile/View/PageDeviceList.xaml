@@ -11,7 +11,7 @@
     <mvvm:TinyView.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="DeviceItemTemplate">
-                <helper:CustomViewCell SelectedBackgroundColor="{StaticResource PrimaryDark}">
+                <ViewCell>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
@@ -48,7 +48,7 @@
                             Text="{Binding Rssi}"
                             VerticalTextAlignment="Center" />
                     </Grid>
-                </helper:CustomViewCell>
+                </ViewCell>
             </DataTemplate>
         </ResourceDictionary>
     </mvvm:TinyView.Resources>
@@ -71,6 +71,7 @@
         </StackLayout>
 
         <ListView
+            x:Name="ListOfDevices"
             Grid.Row="1"
             ItemTemplate="{StaticResource DeviceItemTemplate}"
             ItemsSource="{Binding Devices}"

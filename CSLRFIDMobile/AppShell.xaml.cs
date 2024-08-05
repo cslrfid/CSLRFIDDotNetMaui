@@ -9,6 +9,7 @@ namespace CSLRFIDMobile
             InitializeComponent();
 
             Routing.RegisterRoute(nameof(PageDeviceList), typeof(PageDeviceList));
+            Routing.RegisterRoute(nameof(PageInventory), typeof(PageInventory));
         }
 
         protected override void OnNavigated(ShellNavigatedEventArgs args)

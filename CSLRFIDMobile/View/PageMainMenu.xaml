@@ -16,7 +16,7 @@
             BorderColor="Transparent"
             CornerRadius="8">
             <Frame.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding OnInventoryButtonCommand}" CommandParameter="1" />
+                <TapGestureRecognizer Command="{Binding InventoryButtonCommand}" CommandParameter="1" />
             </Frame.GestureRecognizers>
             <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
@@ -39,22 +39,23 @@
             Margin="2.5,5,5,2.5"
             Padding="0"
             BorderColor="Transparent"
-            CornerRadius="8">
+            CornerRadius="8"
+            IsVisible="False">
             <Frame.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding OnReadWriteButtonCommand}" CommandParameter="1" />
+                <TapGestureRecognizer Command="{Binding GeigerButtonCommand}" CommandParameter="1" />
             </Frame.GestureRecognizers>
             <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="7.5*" />
                     <RowDefinition Height="2.5*" />
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="write.svg" />
+                <Image Grid.Row="0" Source="search.svg" />
                 <Label
                     Grid.Row="1"
                     FontAttributes="Bold"
                     FontSize="Large"
                     HorizontalOptions="CenterAndExpand"
-                    Text="Read/Write"
+                    Text="Geiger Search"
                     TextColor="{StaticResource White}" />
             </Grid>
         </Frame>
@@ -64,9 +65,10 @@
             Margin="5,2.5,2.5,2.5"
             Padding="0"
             BorderColor="Transparent"
-            CornerRadius="8">
+            CornerRadius="8"
+            IsVisible="False">
             <Frame.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding OnRegisterTagButtonCommand}" CommandParameter="1" />
+                <TapGestureRecognizer Command="{Binding RegisterTagButtonCommand}" CommandParameter="1" />
             </Frame.GestureRecognizers>
             <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
@@ -89,9 +91,10 @@
             Margin="2.5,2.5,5,2.5"
             Padding="0"
             BorderColor="Transparent"
-            CornerRadius="8">
+            CornerRadius="8"
+            IsVisible="False">
             <Frame.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding OnSpecialFuncButtonCommand}" CommandParameter="1" />
+                <TapGestureRecognizer Command="{Binding SpecialFuncButtonCommand}" CommandParameter="1" />
             </Frame.GestureRecognizers>
             <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
@@ -114,22 +117,23 @@
             Margin="5,2.5,2.5,2.5"
             Padding="0"
             BorderColor="Transparent"
-            CornerRadius="8">
+            CornerRadius="8"
+            IsVisible="False">
             <Frame.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding OnGeigerButtonCommand}" CommandParameter="1" />
+                <TapGestureRecognizer Command="{Binding ReadWriteButtonCommand}" CommandParameter="1" />
             </Frame.GestureRecognizers>
             <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="7.5*" />
                     <RowDefinition Height="2.5*" />
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="search.svg" />
+                <Image Grid.Row="0" Source="write.svg" />
                 <Label
                     Grid.Row="1"
                     FontAttributes="Bold"
                     FontSize="Large"
                     HorizontalOptions="CenterAndExpand"
-                    Text="Geiger Search"
+                    Text="Read/Write"
                     TextColor="{StaticResource White}" />
             </Grid>
         </Frame>
@@ -139,9 +143,10 @@
             Margin="2.5,2.5,5,2.5"
             Padding="0"
             BorderColor="Transparent"
-            CornerRadius="8">
+            CornerRadius="8"
+            IsVisible="False">
             <Frame.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding OnSettingButtonCommand}" CommandParameter="1" />
+                <TapGestureRecognizer Command="{Binding SettingButtonCommand}" CommandParameter="1" />
             </Frame.GestureRecognizers>
             <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
@@ -164,9 +169,10 @@
             Margin="5,2.5,2.5,2.5"
             Padding="0"
             BorderColor="Transparent"
-            CornerRadius="8">
+            CornerRadius="8"
+            IsVisible="False">
             <Frame.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding OnSecurityButtonCommand}" CommandParameter="1" />
+                <TapGestureRecognizer Command="{Binding SecurityButtonCommand}" CommandParameter="1" />
             </Frame.GestureRecognizers>
             <Grid BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
@@ -189,9 +195,10 @@
             Margin="2.5,2.5,5,2.5"
             Padding="0"
             BorderColor="Transparent"
-            CornerRadius="8">
+            CornerRadius="8"
+            IsVisible="False">
             <Frame.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding OnFilterButtonCommand}" CommandParameter="1" />
+                <TapGestureRecognizer Command="{Binding FilterButtonCommand}" CommandParameter="1" />
             </Frame.GestureRecognizers>
             <Grid BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
@@ -228,7 +235,7 @@
                     FontSize="Medium"
                     HorizontalOptions="CenterAndExpand"
                     Text="{Binding ConnectedButton}"
-                    TextColor="{Binding ConnectedButtonTextColor}"
+                    TextColor="White"
                     VerticalOptions="CenterAndExpand" />
             </Grid>
         </Frame>
@@ -237,9 +244,13 @@
             Grid.Row="5"
             Grid.ColumnSpan="2"
             Margin="5,0,5,0"
+            IsVisible="{Binding IsBatteryLevelVisible}"
             Orientation="Horizontal">
             <Image Source="battery.svg" />
-            <Label Text="{Binding LabelVoltage}" TextColor="{Binding LabelVoltageTextColor}" />
+            <Label
+                Text="{Binding LabelVoltage}"
+                TextColor="{Binding LabelVoltageTextColor}"
+                VerticalTextAlignment="Center" />
         </StackLayout>
     </Grid>
 

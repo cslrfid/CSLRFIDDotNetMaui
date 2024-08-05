@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Controls.UserDialogs.Maui;
 using CSLRFIDMobile.Services;
+using CSLRFIDMobile.View;
 using Plugin.BLE;
 using Plugin.BLE.Abstractions;
 using Plugin.BLE.Abstractions.Contracts;
 using Plugin.BLE.Abstractions.EventArgs;
 using Plugin.BLE.Abstractions.Extensions;
-
+using TinyMvvm;
 using static CSLibrary.RFIDDEVICE;
 
 namespace CSLRFIDMobile.ViewModel
@@ -38,6 +39,7 @@ namespace CSLRFIDMobile.ViewModel
                 if (value != null)
                 {
                     _ = HandleSelectedDevice(value);
+                    OnPropertyChanged(nameof(SelectedDevice));
                 }
             }
         }
@@ -60,7 +62,18 @@ namespace CSLRFIDMobile.ViewModel
         {
             _userDialogs = userDialogs;
             _cslReaderService = appStateService;
-                     
+
+            _cslReaderService.adapter.DeviceDisconnected += OnDeviceDisconnected!;
+
+            try
+            {
+                _ = _cslReaderService.reader?.DisconnectAsync()!;
+            }
+            catch (Exception ex)
+            {
+                CSLibrary.Debug.WriteLine($"Device disconnect error: {ex.Message}");
+            }
+
         }
 
         private string GetStateText()
@@ -92,8 +105,6 @@ namespace CSLRFIDMobile.ViewModel
 
             return "Unknown BLE state.";
         }
-
-        bool _scanAgain = true;
 
         private void Adapter_ScanTimeoutElapsed(object sender, EventArgs e)
         {
@@ -205,17 +216,9 @@ namespace CSLRFIDMobile.ViewModel
         public override async Task OnAppearing()
         {
             await base.OnAppearing();
-           
-            try
-            {
-                await _cslReaderService.reader?.DisconnectAsync()!;
-                //RestartScanning();
-            }
-            catch (Exception ex)
-            {
-                CSLibrary.Debug.WriteLine($"Device Resume Error: {ex.Message}");
-            }
 
+            _cslReaderService.SetEvent(true);
+          
         }
 
         public List<DeviceListItemViewModel> SystemDevices { get; private set; } = new List<DeviceListItemViewModel>();
@@ -224,6 +227,8 @@ namespace CSLRFIDMobile.ViewModel
         {
             try
             {
+                _cslReaderService.adapter.DeviceDisconnected -= OnDeviceDisconnected!;
+
                 await _cslReaderService.adapter?.StopScanningForDevicesAsync()!;
             }
             catch (Exception ex)
@@ -291,8 +296,7 @@ namespace CSLRFIDMobile.ViewModel
             try
             {
                 if (!await _userDialogs.ConfirmAsync($"Connect to device '{device.Name}'?"))
-                {
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsStateOn)));
+                {                    
                     return;
                 }
 

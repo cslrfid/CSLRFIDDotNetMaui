@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mvvm:TinyView
+    x:Class="CSLRFIDMobile.View.PageInventory"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:helper="clr-namespace:CSLRFIDMobile.Helper"
+    xmlns:model="clr-namespace:CSLRFIDMobile.Model"
+    xmlns:mvvm="clr-namespace:TinyMvvm;assembly=TinyMvvm.Maui"
+    xmlns:viewmodel="clr-namespace:CSLRFIDMobile.ViewModel"
+    Title="Inventory">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <ListView
+            x:Name="ListViewTagData"
+            Grid.Row="0"
+            ItemsSource="{Binding TagInfoList}">
+            <ListView.Header>
+                <StackLayout Padding="10,5,0,5" BackgroundColor="#cccccc">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="0.2*" />
+                        </Grid.ColumnDefinitions>
+                        <Label
+                            Grid.Column="0"
+                            FontSize="Small"
+                            Text="EPC"
+                            VerticalTextAlignment="Center" />
+                        <Label
+                            Grid.Column="1"
+                            FontSize="Small"
+                            HorizontalTextAlignment="Start"
+                            Text="RSSI"
+                            VerticalTextAlignment="Center" />
+                    </Grid>
+                </StackLayout>
+            </ListView.Header>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <helper:CustomViewCell SelectedBackgroundColor="{StaticResource PrimaryDark}">
+                        <StackLayout Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0.8*" />
+                                    <ColumnDefinition Width="0.2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label
+                                    Grid.Column="0"
+                                    FontSize="Small"
+                                    Text="{Binding EPC}"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    HorizontalTextAlignment="Start"
+                                    Text="{Binding RSSI}"
+                                    VerticalTextAlignment="Center" />
+                            </Grid>
+                        </StackLayout>
+                    </helper:CustomViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+        <StackLayout
+            Grid.Row="1"
+            Margin="5,0,5,0"
+            Orientation="Horizontal">
+            <Button
+                Margin="0,0,5,0"
+                Command="{Binding StartInventoryButtonCommand}"
+                FontSize="Large"
+                Text="{Binding StartInventoryButtonText}" />
+            <Button
+                Command="{Binding ClearButtonCommand}"
+                FontSize="Large"
+                HorizontalOptions="StartAndExpand"
+                Text="Clear" />
+        </StackLayout>
+
+        <StackLayout
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+            Margin="5,0,5,0"
+            Orientation="Horizontal">
+            <Label Text="Count: " VerticalTextAlignment="Center" />
+            <Label Text="{Binding TagCount}" VerticalTextAlignment="Center" />
+        </StackLayout>
+
+        <StackLayout
+            Grid.Row="3"
+            Grid.ColumnSpan="2"
+            Margin="5,0,5,0"
+            Orientation="Horizontal">
+            <Image Source="battery.svg" />
+            <Label
+                Text="{Binding LabelVoltage}"
+                TextColor="{Binding LabelVoltageTextColor}"
+                VerticalTextAlignment="Center" />
+        </StackLayout>
+
+    </Grid>
+</mvvm:TinyView>

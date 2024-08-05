@@ -57,6 +57,8 @@ namespace CSLRFIDMobile
             builder.Services.AddSingleton<PageMainMenu>();
             builder.Services.AddTransient<DeviceListViewModel>();
             builder.Services.AddTransient<PageDeviceList>();
+            builder.Services.AddTransient<ViewModelInventory>();
+            builder.Services.AddTransient<PageInventory>();
 
             return builder.Build();
         }

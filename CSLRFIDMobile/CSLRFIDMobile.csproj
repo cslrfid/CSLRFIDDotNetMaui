@@ -48,7 +48,7 @@
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" BaseSize="96,96" Color="#00529c" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#00529c" BaseSize="360" Resize="True" />
+		<MauiSplashScreen Include="Resources\Splash\csl_logo_filled.svg" Color="#ffffff" BaseSize="180" Resize="True" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -76,7 +76,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Converter\" />
-	  <Folder Include="ViewModel\" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -87,6 +86,9 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="View\PageDeviceList.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\PageInventory.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
