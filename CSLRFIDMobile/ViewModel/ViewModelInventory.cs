@@ -15,6 +15,8 @@ namespace CSLRFIDMobile.ViewModel
         private bool _InventoryScanning = false;
         public bool _KeyDown = false;
 
+        public Action? ClearRfidListView { get; set; }
+
         public ViewModelInventory(IUserDialogs userDialogs, CSLReaderService cslReaderService)
         {
             _userDialogs = userDialogs;
@@ -56,6 +58,19 @@ namespace CSLRFIDMobile.ViewModel
                     TagCount = 0;
                 }
             });
+        }
+
+        [RelayCommand]
+        private async Task TagSelected(object obj)
+        {
+            TagInfoViewModel tag =(TagInfoViewModel)((SelectedItemChangedEventArgs)obj).SelectedItem;
+
+            if (await _userDialogs.ConfirmAsync($"Select the tag '{tag.EPC}'?"))
+            {
+                _cslReaderService._SELECT_EPC = tag.EPC;
+            }
+
+            ClearRfidListView?.Invoke();
         }
 
         public override async Task OnAppearing()

@@ -3,6 +3,7 @@
     x:Class="CSLRFIDMobile.View.PageInventory"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:b="clr-namespace:EventToCommandBehavior"
     xmlns:helper="clr-namespace:CSLRFIDMobile.Helper"
     xmlns:model="clr-namespace:CSLRFIDMobile.Model"
     xmlns:mvvm="clr-namespace:TinyMvvm;assembly=TinyMvvm.Maui"
@@ -19,6 +20,9 @@
             x:Name="ListViewTagData"
             Grid.Row="0"
             ItemsSource="{Binding TagInfoList}">
+            <ListView.Behaviors>
+                <b:EventToCommandBehavior Command="{Binding TagSelectedCommand}" EventName="ItemSelected" />
+            </ListView.Behaviors>
             <ListView.Header>
                 <StackLayout Padding="10,5,0,5" BackgroundColor="#cccccc">
                     <Grid>

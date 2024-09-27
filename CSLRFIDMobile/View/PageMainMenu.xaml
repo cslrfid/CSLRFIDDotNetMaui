@@ -39,8 +39,7 @@
             Margin="2.5,5,5,2.5"
             Padding="0"
             BorderColor="Transparent"
-            CornerRadius="8"
-            IsVisible="False">
+            CornerRadius="8">
             <Frame.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding GeigerButtonCommand}" CommandParameter="1" />
             </Frame.GestureRecognizers>

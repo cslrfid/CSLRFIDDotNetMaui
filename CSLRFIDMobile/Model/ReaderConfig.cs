@@ -74,9 +74,14 @@ namespace CSLRFIDMobile.Model
 
         public uint RFID_BatteryPollingTime = 300;
 
-        public string Impinj_AuthenticateServerURL;
-        public string Impinj_AuthenticateEmail;
-        public string Impinj_AuthenticatePassword;
+        // LNA setting
+        public int RFID_RFLNAcompression = 1;
+        public int RFID_RFLNAGain = 1;
+        public int RFID_IFLNAGain = 24;
+        public int RFID_AGCGain = -6;
+
+        public int PowerUpperLimitIndBm = -50;
+        public int PowerLowerLimitIndBm = -90;
 
         public bool _keepScreenOn = false;
 
@@ -85,6 +90,9 @@ namespace CSLRFIDMobile.Model
         public CONFIG(MODEL model)
         {
             int port = 16;
+
+            PowerUpperLimitIndBm = -50;
+            PowerLowerLimitIndBm = -90;
 
             RFID_TagPopulation = 60;
 
@@ -172,10 +180,6 @@ namespace CSLRFIDMobile.Model
             RFID_BatteryPollingTime = 300;  // 300s
 
             RFID_DuplicateEliminationRollingWindow = 0;
-
-            Impinj_AuthenticateServerURL = "https://democloud.convergence.com.hk/ias";
-            Impinj_AuthenticateEmail = "";
-            Impinj_AuthenticatePassword = "";
 
             _keepScreenOn = false;
             

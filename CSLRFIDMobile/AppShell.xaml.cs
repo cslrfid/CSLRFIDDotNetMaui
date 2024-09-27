@@ -10,6 +10,8 @@ namespace CSLRFIDMobile
 
             Routing.RegisterRoute(nameof(PageDeviceList), typeof(PageDeviceList));
             Routing.RegisterRoute(nameof(PageInventory), typeof(PageInventory));
+            Routing.RegisterRoute(nameof(PageGeigerSearch), typeof(PageGeigerSearch));
+            Routing.RegisterRoute(nameof(PageGeigerSettings), typeof(PageGeigerSettings));
         }
 
         protected override void OnNavigated(ShellNavigatedEventArgs args)

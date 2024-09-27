@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<mvvm:TinyView
+    x:Class="CSLRFIDMobile.View.PageGeigerSearch"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:b="clr-namespace:EventToCommandBehavior"
+    xmlns:compat="clr-namespace:Microsoft.Maui.Controls.Compatibility;assembly=Microsoft.Maui.Controls"
+    xmlns:controls="clr-namespace:GradientProgressBar;assembly=CSLRFIDMobile"
+    xmlns:gauge="clr-namespace:epj.CircularGauge.Maui;assembly=epj.CircularGauge.Maui"
+    xmlns:model="clr-namespace:CSLRFIDMobile.Model"
+    xmlns:mvvm="clr-namespace:TinyMvvm;assembly=TinyMvvm.Maui"
+    xmlns:viewmodel="clr-namespace:CSLRFIDMobile.ViewModel"
+    Title="Geiger Search">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Command="{Binding SettingsPageCommand}"
+            Order="Secondary"
+            Priority="0"
+            Text="Settings" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout Padding="20,20,20,0">
+            <Label
+                Padding="0,20,0,20"
+                FontSize="Medium"
+                HorizontalOptions="StartAndExpand">
+                Selected EPC
+            </Label>
+            <Entry
+                x:Name="powerEntry"
+                FontSize="Medium"
+                HorizontalOptions="FillAndExpand"
+                Placeholder=""
+                Text="{Binding EntryEPC}" />
+            <Label
+                Padding="0,20,0,5"
+                FontSize="20"
+                HorizontalOptions="CenterAndExpand"
+                HorizontalTextAlignment="Start">
+                Signal
+            </Label>
+            <!--  Option 1: use linear progress bar  -->
+            <controls:GradientProgressBar
+                BarBackgroundColor="{StaticResource GrayTileColor}"
+                CornerRadius="6"
+                FontSize="24"
+                HeightRequest="50"
+                IsVisible="False"
+                Percentage="{Binding ProgressbarRSSIValue}"
+                TextColor="Black" />
+            <!--  Option 1: use radial gauge  -->
+            <gauge:CircularGauge
+                BaseColor="LightGray"
+                BaseStrokeColor="DimGray"
+                BaseStrokeWidth="4.0"
+                BaseWidth="20.0"
+                GaugeColor="Red"
+                GaugeWidth="25.0"
+                HeightRequest="300"
+                MaxValue="100.0"
+                MinValue="0.0"
+                NeedleColor="LightGray"
+                NeedleLength="120.0"
+                NeedleOffset="20.0"
+                NeedleWidth="10.0"
+                ScaleColor="LightGray"
+                ScaleDistance="4.0"
+                ScaleLength="8.0"
+                ScaleThickness="3.0"
+                ScaleUnits="10"
+                StartAngle="45.0"
+                SweepAngle="270.0"
+                WidthRequest="300"
+                Value="{Binding RadialGaugeRSSIValue}">
+                <gauge:CircularGauge.GaugeGradientColors>
+                    <Color>LightGray</Color>
+                    <Color>LightGray</Color>
+                    <Color>DimGray</Color>
+                    <Color>Yellow</Color>
+                    <Color>Yellow</Color>
+                    <Color>OrangeRed</Color>
+                    <Color>DarkRed</Color>
+                    <Color>DarkRed</Color>
+                </gauge:CircularGauge.GaugeGradientColors>
+            </gauge:CircularGauge>
+            <Label
+                FontAttributes="Bold"
+                FontSize="30"
+                HorizontalOptions="CenterAndExpand"
+                HorizontalTextAlignment="Start"
+                Text="{Binding RadialGaugeRSSIValue}" />
+            <Button
+                Margin="50"
+                BackgroundColor="{StaticResource Primary}"
+                Command="{Binding StartGeigerButtonCommand}"
+                CornerRadius="5"
+                FontSize="Medium"
+                HeightRequest="50"
+                HorizontalOptions="CenterAndExpand"
+                Text="{Binding StartGeigerButtonText}"
+                TextColor="White"
+                WidthRequest="320" />
+        </StackLayout>
+    </ContentPage.Content>
+</mvvm:TinyView>
