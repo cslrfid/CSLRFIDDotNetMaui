@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="CSLRFIDMobile.View.PageSettingPower"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Power Sequencing">
+    <ScrollView>
+        <StackLayout Padding="10,10,10,0">
+
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Number of Power Level"
+                    VerticalOptions="Start" />
+                <Entry
+                    x:Name="entryNumberofPower"
+                    HorizontalOptions="FillAndExpand"
+                    Unfocused="entryNumberofPowerUnfocused" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Order :"
+                    VerticalOptions="Start" />
+                <Label HorizontalOptions="FillAndExpand" Text="Power Level" />
+                <Label HorizontalOptions="FillAndExpand" Text="DWell Time" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower1"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 1 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower1" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell1" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower2"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 2 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower2" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell2" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower3"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 3 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower3" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell3" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower4"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 4 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower4" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell4" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower5"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 5 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower5" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell5" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower6"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 6 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower6" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell6" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower7"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 7 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower7" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell7" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower8"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 8 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower8" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell8" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower9"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 9 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower9" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell9" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower10"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 10 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower10" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell10" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower11"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 11 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower11" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell11" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower12"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 12 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower12" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell12" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower13"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 13 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower13" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell13" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower14"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 14 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower14" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell14" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower15"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 15 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower15" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell15" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <StackLayout
+                x:Name="stackPower16"
+                IsVisible="False"
+                Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power 16 :"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower16" HorizontalOptions="FillAndExpand" />
+                <Entry x:Name="entryDWell16" HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <Button
+                BackgroundColor="#C3C3C3"
+                Clicked="btnOKClicked"
+                FontSize="Large"
+                HorizontalOptions="FillAndExpand"
+                Text="SAVE"
+                TextColor="Black" />
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

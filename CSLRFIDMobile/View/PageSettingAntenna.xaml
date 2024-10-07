@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="CSLRFIDMobile.View.PageSettingAntenna"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Antenna">
+
+    <ScrollView>
+        <StackLayout Padding="10,10,10,0">
+
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Antenna 1"
+                    VerticalOptions="Start" />
+                <Switch x:Name="switchAntenna1Enable" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower1" MinimumWidthRequest="300" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Dwell"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryDwell1" MinimumWidthRequest="300" />
+            </StackLayout>
+
+            <BoxView
+                x:Name="boxview2"
+                HeightRequest="5"
+                HorizontalOptions="FillAndExpand"
+                Color="Black" />
+
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Antenna 2"
+                    VerticalOptions="Start" />
+                <Switch x:Name="switchAntenna2Enable" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower2" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Dwell"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryDwell2" />
+            </StackLayout>
+
+            <BoxView
+                x:Name="boxview3"
+                HeightRequest="5"
+                HorizontalOptions="FillAndExpand"
+                Color="Black" />
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Antenna 3" VerticalOptions="Start" />
+                <Switch x:Name="switchAntenna3Enable" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower3" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Dwell"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryDwell3" />
+            </StackLayout>
+
+            <BoxView
+                x:Name="boxview4"
+                HeightRequest="5"
+                HorizontalOptions="FillAndExpand"
+                Color="Black" />
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Antenna 4" VerticalOptions="Start" />
+                <Switch x:Name="switchAntenna4Enable" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Power"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryPower4" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label
+                    MinimumWidthRequest="150"
+                    Text="Dwell"
+                    VerticalOptions="Start" />
+                <Entry x:Name="entryDwell4" />
+            </StackLayout>
+
+            <BoxView
+                HeightRequest="5"
+                HorizontalOptions="FillAndExpand"
+                Color="Black" />
+
+            <Button
+                BackgroundColor="#C3C3C3"
+                Clicked="btnOKClicked"
+                FontSize="Large"
+                HorizontalOptions="FillAndExpand"
+                Text="SAVE"
+                TextColor="Black" />
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

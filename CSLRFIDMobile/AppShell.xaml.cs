@@ -12,6 +12,12 @@ namespace CSLRFIDMobile
             Routing.RegisterRoute(nameof(PageInventory), typeof(PageInventory));
             Routing.RegisterRoute(nameof(PageGeigerSearch), typeof(PageGeigerSearch));
             Routing.RegisterRoute(nameof(PageGeigerSettings), typeof(PageGeigerSettings));
+            Routing.RegisterRoute(nameof(PageAbout), typeof(PageAbout));
+            Routing.RegisterRoute(nameof(PageSetting), typeof(PageSetting));
+            Routing.RegisterRoute(nameof(PageSettingAdministration), typeof(PageSettingAdministration));
+            Routing.RegisterRoute(nameof(PageSettingAntenna), typeof(PageSettingAntenna));
+            Routing.RegisterRoute(nameof(PageSettingOperation), typeof(PageSettingOperation));
+            Routing.RegisterRoute(nameof(PageSettingPower), typeof(PageSettingPower));
         }
 
         protected override void OnNavigated(ShellNavigatedEventArgs args)

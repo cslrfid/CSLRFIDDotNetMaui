@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<mvvm:TinyView
+    x:Class="CSLRFIDMobile.View.PageSetting"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mvvm="clr-namespace:TinyMvvm;assembly=TinyMvvm.Maui"
+    Title="Settings">
+    <Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*,*,100,30">
+        <Frame
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="5,5,2.5,2.5"
+            Padding="0"
+            BorderColor="Transparent"
+            CornerRadius="8">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding SettingOperationsCommand}" CommandParameter="1" />
+            </Frame.GestureRecognizers>
+            <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7.5*" />
+                    <RowDefinition Height="2.5*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="operations.svg" />
+                <Label
+                    Grid.Row="1"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Operations"
+                    TextColor="{StaticResource White}" />
+            </Grid>
+        </Frame>
+        <Frame
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="2.5,5,5,2.5"
+            Padding="0"
+            BorderColor="Transparent"
+            CornerRadius="8">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding SettingAdministrationCommand}" CommandParameter="1" />
+            </Frame.GestureRecognizers>
+            <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7.5*" />
+                    <RowDefinition Height="2.5*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="admin.svg" />
+                <Label
+                    Grid.Row="1"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Administration"
+                    TextColor="{StaticResource White}" />
+            </Grid>
+        </Frame>
+        <Frame
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="5,2.5,2.5,2.5"
+            Padding="0"
+            BorderColor="Transparent"
+            CornerRadius="8"
+            IsVisible="{Binding IsAntennaConfigVisible}">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding SettingAntennaPowerCommand}" CommandParameter="1" />
+            </Frame.GestureRecognizers>
+            <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7.5*" />
+                    <RowDefinition Height="2.5*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="settings.svg" />
+                <Label
+                    Grid.Row="1"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Antenna Power"
+                    TextColor="{StaticResource White}" />
+            </Grid>
+        </Frame>
+        <Frame
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="5,2.5,2.5,2.5"
+            Padding="0"
+            BorderColor="Transparent"
+            CornerRadius="8"
+            IsVisible="{Binding IsPowerSequencingVisible}">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding SettingPowerSequencingCommand}" CommandParameter="1" />
+            </Frame.GestureRecognizers>
+            <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7.5*" />
+                    <RowDefinition Height="2.5*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="sequence.svg" />
+                <Label
+                    Grid.Row="1"
+                    FontAttributes="Bold"
+                    FontSize="Medium"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="Power Sequencing"
+                    TextColor="{StaticResource White}" />
+            </Grid>
+        </Frame>
+        <Frame
+            Grid.Row="1"
+            Grid.Column="2"
+            Margin="2.5,2.5,5,2.5"
+            Padding="0"
+            BorderColor="Transparent"
+            CornerRadius="8"
+            IsVisible="True">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding SettingAboutCommand}" CommandParameter="1" />
+            </Frame.GestureRecognizers>
+            <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7.5*" />
+                    <RowDefinition Height="2.5*" />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Source="info.svg" />
+                <Label
+                    Grid.Row="1"
+                    FontAttributes="Bold"
+                    FontSize="Large"
+                    HorizontalOptions="CenterAndExpand"
+                    Text="About"
+                    TextColor="{StaticResource White}" />
+            </Grid>
+        </Frame>
+    </Grid>
+</mvvm:TinyView>

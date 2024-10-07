@@ -157,6 +157,26 @@ namespace CSLRFIDMobile.ViewModel
             }
         }
 
+        [RelayCommand]
+        async Task SettingButton()
+        {
+            if (_cslReaderService.reader?.BLEBusy ?? false)
+            {
+                _userDialogs.ShowToast("Configuring Reader, Please Wait", null, TimeSpan.FromSeconds(1));
+                return;
+            }
+            else
+            {
+                if (_cslReaderService.reader?.Status == CSLibrary.HighLevelInterface.READERSTATE.DISCONNECT)
+                {
+                    ShowConnectionWarringMessage();
+                    return;
+                }
+
+                await Shell.Current.GoToAsync(nameof(PageSetting), true);
+            }
+        }
+
         void ShowConnectionWarringMessage()
         {
             string connectWarringMsg = "Reader NOT connected\n\nPlease connect to reader first!!!";

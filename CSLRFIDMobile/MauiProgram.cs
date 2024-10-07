@@ -1,4 +1,4 @@
-﻿using Controls.UserDialogs.Maui;
+using Controls.UserDialogs.Maui;
 using CSLRFIDMobile.Services;
 using CSLRFIDMobile.View;
 using Microsoft.Extensions.Logging;
@@ -77,6 +77,13 @@ namespace CSLRFIDMobile
             builder.Services.AddTransient<PageGeigerSearch>();
             builder.Services.AddTransient<ViewModelGeigerSettings>();
             builder.Services.AddTransient<PageGeigerSettings>();
+            builder.Services.AddTransient<ViewModelSetting>();
+            builder.Services.AddTransient<PageAbout>();
+            builder.Services.AddTransient<PageSetting>();
+            builder.Services.AddTransient<PageSettingAdministration>();
+            builder.Services.AddTransient<PageSettingAntenna>();
+            builder.Services.AddTransient<PageSettingOperation>();
+            builder.Services.AddTransient<PageSettingPower>();
 
             return builder.Build();
         }
