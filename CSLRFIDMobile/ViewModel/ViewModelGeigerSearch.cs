@@ -1,4 +1,4 @@
-﻿using Controls.UserDialogs.Maui;
+using Controls.UserDialogs.Maui;
 using CSLRFIDMobile.Services;
 using CSLRFIDMobile.Model;
 using System.Windows.Input;
@@ -256,7 +256,7 @@ namespace CSLRFIDMobile.ViewModel
 
         void PlayBeepSound()
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            MainThread.BeginInvokeOnMainThread(async () =>
             {
                 CSLibrary.Debug.WriteLine("Threshold {0}", _Threshold);
 
@@ -277,13 +277,13 @@ namespace CSLRFIDMobile.ViewModel
                 else
                 {
                     if (_beepSoundCount == 0 && _rssi >= 0 && _rssi < 80)
-                        SoundPlayer.PlaySound(_audioManager, "beephigh.mp3");
+                        await SoundPlayer.PlaySound(_audioManager, SoundSelect.BEEPHIGH);
 
                         _beepSoundCount++;
 
                     if (_rssi >= _Threshold)
                     {
-                        SoundPlayer.PlaySound(_audioManager, "beep3s1khz.mp3");
+                        await SoundPlayer.PlaySound(_audioManager, SoundSelect.BEEP3S);
                         _beepSoundCount = 1;
                         _rssi = 0;
                     }
