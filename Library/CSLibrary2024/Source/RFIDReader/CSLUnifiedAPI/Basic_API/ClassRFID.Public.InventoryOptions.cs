@@ -20,26 +20,37 @@ SOFTWARE.
 */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CSLibrary
 {
+    using static RFIDDEVICE;
+    using static FrequencyBand;
+    using Constants;
+
     public partial class RFIDReader
     {
-        internal void StopOperation_CS710S(bool value = true)
+        /*
+        /// <summary>
+        /// Special function for set multi bank inventory without reply
+        /// </summary>
+        public Result SetMultiBankInventoryNoReply(int index)
         {
-            RFIDStopOperation();
+            switch (_deviceType)
+            {
+                case MODEL.CS710S:
+                    if (index < 0 || index > 2)
+                        return Result.NOT_SUPPORTED;
+
+                    RFIDRegister.MultibankReadConfig.SetNoReply((byte)index);
+                    return Result.OK;
+            }
+
+            return Result.NOT_SUPPORTED;
         }
-
-        internal bool SetDuplicateEliminationRollingWindow_CS710S(uint s)
-        {
-            if (s > 255)
-                return false;
-
-            RFIDRegister.DuplicateEliminationRollingWindow.Set((byte)s);
-
-            return true;
-        }
-
+        */
     }
 }
