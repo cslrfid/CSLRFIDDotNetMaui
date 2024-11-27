@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <mvvm:TinyView
     x:Class="CSLRFIDMobile.View.PageInventory"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -9,6 +9,13 @@
     xmlns:mvvm="clr-namespace:TinyMvvm;assembly=TinyMvvm.Maui"
     xmlns:viewmodel="clr-namespace:CSLRFIDMobile.ViewModel"
     Title="Inventory">
+    <mvvm:TinyView.ToolbarItems>
+        <ToolbarItem
+            Command="{Binding ReadModeChangeCommand}"
+            IconImageSource="{Binding ReaderModeImage}"
+            Order="Primary"
+            Priority="0" />
+    </mvvm:TinyView.ToolbarItems>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -19,6 +26,7 @@
         <ListView
             x:Name="ListViewTagData"
             Grid.Row="0"
+            IsVisible="{Binding IsRfidReaderMode}"
             ItemsSource="{Binding TagInfoList}">
             <ListView.Behaviors>
                 <b:EventToCommandBehavior Command="{Binding TagSelectedCommand}" EventName="ItemSelected" />
@@ -72,6 +80,60 @@
 
         </ListView>
 
+        <ListView
+            x:Name="ListViewBarcodeData"
+            Grid.Row="0"
+            IsVisible="{Binding IsBarcodeReaderMode}"
+            ItemsSource="{Binding BarcodeData}">
+            <ListView.Header>
+                <StackLayout Padding="10,5,0,5" BackgroundColor="#cccccc">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="0.2*" />
+                        </Grid.ColumnDefinitions>
+                        <Label
+                            Grid.Column="0"
+                            FontSize="Small"
+                            Text="Barcode"
+                            VerticalTextAlignment="Center" />
+                        <Label
+                            Grid.Column="1"
+                            FontSize="Small"
+                            HorizontalTextAlignment="Start"
+                            Text="Count"
+                            VerticalTextAlignment="Center" />
+                    </Grid>
+                </StackLayout>
+            </ListView.Header>
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <helper:CustomViewCell SelectedBackgroundColor="{StaticResource PrimaryDark}">
+                        <StackLayout Orientation="Vertical">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0.8*" />
+                                    <ColumnDefinition Width="0.2*" />
+                                </Grid.ColumnDefinitions>
+                                <Label
+                                    Grid.Column="0"
+                                    FontSize="Small"
+                                    Text="{Binding Code}"
+                                    VerticalTextAlignment="Center" />
+                                <Label
+                                    Grid.Column="1"
+                                    HorizontalTextAlignment="Start"
+                                    Text="{Binding Count}"
+                                    VerticalTextAlignment="Center" />
+                            </Grid>
+                        </StackLayout>
+                    </helper:CustomViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
         <StackLayout
             Grid.Row="1"
             Margin="5,0,5,0"
@@ -92,6 +154,7 @@
             Grid.Row="2"
             Grid.ColumnSpan="2"
             Margin="5,0,5,0"
+            IsVisible="{Binding IsRfidReaderMode}"
             Orientation="Horizontal">
             <Label Text="Count: " VerticalTextAlignment="Center" />
             <Label Text="{Binding TagCount}" VerticalTextAlignment="Center" />
