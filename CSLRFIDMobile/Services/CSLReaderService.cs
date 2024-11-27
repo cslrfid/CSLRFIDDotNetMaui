@@ -40,6 +40,11 @@ namespace CSLRFIDMobile.Services
         public string _SELECT_TID = "";
         public UInt16 _SELECT_PC = 0x0000;
 
+        public int _inventoryEntryPoint = 0;
+        public bool _settingPage1TagPopulationChanged = false;
+        public bool _settingPage3QvalueChanged = false;
+        public bool _settingPage4QvalueChanged = false;
+
         // for battery level display
         public bool _batteryLow = false;
         public string _labelVoltage = String.Empty;

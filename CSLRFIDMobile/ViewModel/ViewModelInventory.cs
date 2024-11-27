@@ -11,14 +11,20 @@ namespace CSLRFIDMobile.ViewModel
         private readonly CSLReaderService _cslReaderService;
 
         public ObservableCollection<TagInfoViewModel> TagInfoList { get; set; } = new();
+        public ObservableCollection<BARCODEInfoViewModel> BarcodeData { get; set; } = new();
 
         private bool _InventoryScanning = false;
+        private bool _BarcodeScanning = false;
         public bool _KeyDown = false;
+
+        public Action? ClearRfidListView { get; set; }
 
         public ViewModelInventory(IUserDialogs userDialogs, CSLReaderService cslReaderService)
         {
             _userDialogs = userDialogs;
             _cslReaderService = cslReaderService;
+
+            _cslReaderService.reader!.barcode.FastBarcodeMode(false);
 
             InventorySetting();
         }
@@ -31,31 +37,105 @@ namespace CSLRFIDMobile.ViewModel
         public string labelVoltageTextColor = "Black";
         [ObservableProperty]
         public int tagCount = 0;
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsRfidReaderMode))]
+        [NotifyPropertyChangedFor(nameof(IsBarcodeReaderMode))]
+        public string readerModeImage = "rfid.svg";
+
+        public bool IsRfidReaderMode => ReaderModeImage == "rfid.svg";
+        public bool IsBarcodeReaderMode => ReaderModeImage == "barcode.svg";
+
 
         [RelayCommand]
         void StartInventoryButton()
         {
-            if (!_InventoryScanning)
+            if (IsRfidReaderMode)
             {
-                StartInventory();
+                if (!_InventoryScanning)
+                {
+                    StartInventory();
+                }
+                else
+                {
+                    StopInventory();
+                }
             }
             else
             {
-                StopInventory();
+                if (_BarcodeScanning)
+                {
+                    BarcodeStop();
+                }
+                else
+                {
+                    if (_cslReaderService.reader!.BLEBusy)
+                    {
+                        _userDialogs.ShowToast("Configuring Reader, Please Wait", null, TimeSpan.FromSeconds(1));
+                    }
+                    else
+                    {
+                        BarcodeStart();
+                    }
+                }
             }
             
         }
+
         [RelayCommand]
         private void ClearButton()
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                lock (TagInfoList)
+                if (IsRfidReaderMode)
                 {
-                    TagInfoList.Clear();
-                    TagCount = 0;
+                    lock (TagInfoList)
+                    {
+                        TagInfoList.Clear();
+                        TagCount = 0;
+                    }
+                }
+                else
+                {
+                    lock (BarcodeData)
+                    {
+                        BarcodeData.Clear();
+                    }
                 }
             });
+        }
+
+        [RelayCommand]
+        private async Task TagSelected(object obj)
+        {
+            TagInfoViewModel tag =(TagInfoViewModel)((SelectedItemChangedEventArgs)obj).SelectedItem;
+
+            if (await _userDialogs.ConfirmAsync($"Select the tag '{tag.EPC}'?"))
+            {
+                _cslReaderService._SELECT_EPC = tag.EPC;
+            }
+
+            ClearRfidListView?.Invoke();
+        }
+
+        [RelayCommand]
+        private void ReadModeChange()
+        {
+            if (ReaderModeImage == "rfid.svg")
+            {
+                ReaderModeImage = "barcode.svg";
+                StartInventoryButtonText = "Start Scan";
+                ClearButton();
+                SetEvent(true);
+                _cslReaderService.reader!.barcode.FastBarcodeMode(true);
+            }
+            else
+            {
+                ReaderModeImage = "rfid.svg";
+                StartInventoryButtonText = "Start Inventory";
+                ClearButton();
+                SetEvent(true);
+                _cslReaderService.reader!.barcode.FastBarcodeMode(false);
+            }
         }
 
         public override async Task OnAppearing()
@@ -86,6 +166,9 @@ namespace CSLRFIDMobile.ViewModel
                 // RFID event handler
                 _cslReaderService.reader!.rfid.OnAsyncCallback += new EventHandler<CSLibrary.Events.OnAsyncCallbackEventArgs>(TagInventoryEvent!);
                 _cslReaderService.reader!.rfid.OnStateChanged += new EventHandler<CSLibrary.Events.OnStateChangedEventArgs>(StateChangedEvent!);
+
+                // Barcode event handler
+                _cslReaderService.reader!.barcode.OnCapturedNotify += new EventHandler<CSLibrary.Barcode.BarcodeEventArgs>(Linkage_CaptureCompleted!);
 
                 // Key Button event handler
                 _cslReaderService.reader!.notification.OnKeyEvent += new EventHandler<CSLibrary.Notification.HotKeyEventArgs>(HotKeys_OnKeyEvent!);
@@ -155,6 +238,76 @@ namespace CSLRFIDMobile.ViewModel
 
             _cslReaderService.reader?.rfid.StartOperation(CSLibrary.Constants.Operation.TAG_PRERANGING);
 
+        }
+
+        void BarcodeStart()
+        {
+            if (_cslReaderService.reader!.barcode.state == CSLibrary.BarcodeReader.STATE.NOTVALID)
+            {
+                _userDialogs.ShowSnackbar("Barcode module not exists", null, null, TimeSpan.FromSeconds(1));
+                return;
+            }
+
+            _BarcodeScanning = true;
+
+            _cslReaderService.reader!.barcode.Start();
+            StartInventoryButtonText = "Stop Scan";
+        }
+
+
+        void BarcodeStop()
+        {
+            _BarcodeScanning = false;
+            _cslReaderService.reader!.barcode.Stop();
+
+            StartInventoryButtonText = "Start Scan";            
+        }
+
+
+        void Linkage_CaptureCompleted(object sender, CSLibrary.Barcode.BarcodeEventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                switch (e.MessageType)
+                {
+                    case CSLibrary.Barcode.Constants.MessageType.DEC_MSG:
+                        AddOrUpdateBarcodeData((CSLibrary.Barcode.Structures.DecodeMessage)e.Message);
+                        break;
+
+                    case CSLibrary.Barcode.Constants.MessageType.ERR_MSG:
+                        break;
+                }
+            });
+        }
+
+        private void AddOrUpdateBarcodeData(CSLibrary.Barcode.Structures.DecodeMessage decodeInfo)
+        {
+            if (decodeInfo != null)
+            {
+                int cnt = 0;
+                bool found = false;
+
+                for (; cnt < BarcodeData.Count; cnt++)
+                {
+                    if (BarcodeData[cnt].Code == decodeInfo.pchMessage)
+                    {
+                        BarcodeData[cnt].Count++;
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    BARCODEInfoViewModel item = new();
+
+                    item.Code = decodeInfo.pchMessage;
+                    item.Count = 1;
+                    item.timeOfRead = DateTime.Now;
+
+                    BarcodeData.Insert(0, item);
+                }
+            }
         }
 
         void TagInventoryEvent(object sender, CSLibrary.Events.OnAsyncCallbackEventArgs e)
@@ -257,13 +410,13 @@ namespace CSLRFIDMobile.ViewModel
                 {
                     if (e.KeyDown)
                     {
-                        if (!_KeyDown)
+                        if (!_KeyDown && IsRfidReaderMode)
                             StartInventory();
                         _KeyDown = true;
                     }
                     else
                     {
-                        if (_KeyDown == true)
+                        if (_KeyDown && IsRfidReaderMode)
                             StopInventory();
                         _KeyDown = false;
                     }

@@ -1,9 +1,14 @@
-﻿using Controls.UserDialogs.Maui;
+using Controls.UserDialogs.Maui;
 using CSLRFIDMobile.Services;
 using CSLRFIDMobile.View;
 using Microsoft.Extensions.Logging;
 using TinyMvvm;
 using CSLRFIDMobile.Helper;
+using Plugin.Maui.Audio;
+using SkiaSharp.Views.Maui.Controls.Hosting;
+using epj.CircularGauge.Maui;
+
+
 
 #if ANDROID
 using CSLRFIDMobile.Platforms.Android;
@@ -22,6 +27,13 @@ namespace CSLRFIDMobile
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseSkiaSharp()
+                .UseCircularGauge()
+                .ConfigureFonts(fonts =>
+                {
+                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                })
                 .UseUserDialogs(true, () =>
                 {
                     //setup your default styles for dialogs
@@ -52,6 +64,8 @@ namespace CSLRFIDMobile
             builder.Logging.AddDebug();
 #endif
 
+            builder.AddAudio();
+
             builder.Services.AddSingleton<CSLReaderService>();
             builder.Services.AddSingleton<ViewModelMainMenu>();
             builder.Services.AddSingleton<PageMainMenu>();
@@ -59,6 +73,17 @@ namespace CSLRFIDMobile
             builder.Services.AddTransient<PageDeviceList>();
             builder.Services.AddTransient<ViewModelInventory>();
             builder.Services.AddTransient<PageInventory>();
+            builder.Services.AddTransient<ViewModelGeigerSearch>();
+            builder.Services.AddTransient<PageGeigerSearch>();
+            builder.Services.AddTransient<ViewModelGeigerSettings>();
+            builder.Services.AddTransient<PageGeigerSettings>();
+            builder.Services.AddTransient<ViewModelSetting>();
+            builder.Services.AddTransient<PageAbout>();
+            builder.Services.AddTransient<PageSetting>();
+            builder.Services.AddTransient<PageSettingAdministration>();
+            builder.Services.AddTransient<PageSettingAntenna>();
+            builder.Services.AddTransient<PageSettingOperation>();
+            builder.Services.AddTransient<PageSettingPower>();
 
             return builder.Build();
         }

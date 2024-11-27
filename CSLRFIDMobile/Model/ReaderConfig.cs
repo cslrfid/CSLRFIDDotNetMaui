@@ -11,6 +11,20 @@ namespace CSLRFIDMobile.Model
 {
     public class CONFIG
     {
+        public class MAINMENUSHORTCUT
+        {
+            public enum FUNCTION
+            {
+                NONE,
+                INVENTORY,
+                BARCODE,
+            }
+
+            public FUNCTION Function = FUNCTION.NONE;
+            public uint DurationMin = 0;
+            public uint DurationMax = 0;
+        }
+
         public string readerID = ""; // device GUID
         public MODEL readerModel = MODEL.UNKNOWN;
         public int country = 0;
@@ -41,6 +55,9 @@ namespace CSLRFIDMobile.Model
         public CSLibrary.Constants.MemoryBank RFID_MBI_MultiBank2;
         public UInt16 RFID_MBI_MultiBank2Offset;
         public UInt16 RFID_MBI_MultiBank2Count;
+
+        // Main Menu Shortcut
+        public MAINMENUSHORTCUT[] RFID_Shortcut = new MAINMENUSHORTCUT[6];
 
         public bool RFID_InventoryAlertSound = true;
         public bool RFID_DBm = true;
@@ -78,6 +95,9 @@ namespace CSLRFIDMobile.Model
         public string Impinj_AuthenticateEmail;
         public string Impinj_AuthenticatePassword;
 
+        public int PowerUpperLimitIndBm = -50;
+        public int PowerLowerLimitIndBm = -90;
+
         public bool _keepScreenOn = false;
 
         public byte RFID_DuplicateEliminationRollingWindow = 0;
@@ -85,6 +105,9 @@ namespace CSLRFIDMobile.Model
         public CONFIG(MODEL model)
         {
             int port = 16;
+
+            PowerUpperLimitIndBm = -50;
+            PowerLowerLimitIndBm = -90;
 
             RFID_TagPopulation = 60;
 
@@ -178,7 +201,28 @@ namespace CSLRFIDMobile.Model
             Impinj_AuthenticatePassword = "";
 
             _keepScreenOn = false;
-            
+
+            for (int cnt = 0; cnt < RFID_Shortcut.Length; cnt++)
+            {
+                MAINMENUSHORTCUT item = new MAINMENUSHORTCUT();
+
+                switch (cnt)
+                {
+                    case 0:
+                        item.Function = MAINMENUSHORTCUT.FUNCTION.INVENTORY;
+                        item.DurationMin = 0;
+                        item.DurationMax = 500;
+                        break;
+                    case 1:
+                        item.Function = MAINMENUSHORTCUT.FUNCTION.BARCODE;
+                        item.DurationMin = 500;
+                        item.DurationMax = 10000;
+                        break;
+                }
+
+                RFID_Shortcut[cnt] = item;
+            }
+
         }
     }
 }

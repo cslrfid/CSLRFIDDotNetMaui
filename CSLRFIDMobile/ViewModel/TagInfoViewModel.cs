@@ -39,4 +39,14 @@ namespace CSLRFIDMobile.ViewModel
 
         public DateTime timeOfRead;
     }
+
+    public partial class BARCODEInfoViewModel : BaseViewModel
+    {
+        [ObservableProperty]
+        public string code = String.Empty;
+        [ObservableProperty]
+        public uint count = 0;
+
+        public DateTime timeOfRead;
+    }
 }

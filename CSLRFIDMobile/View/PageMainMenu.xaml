@@ -39,8 +39,7 @@
             Margin="2.5,5,5,2.5"
             Padding="0"
             BorderColor="Transparent"
-            CornerRadius="8"
-            IsVisible="False">
+            CornerRadius="8">
             <Frame.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding GeigerButtonCommand}" CommandParameter="1" />
             </Frame.GestureRecognizers>
@@ -60,7 +59,7 @@
             </Grid>
         </Frame>
         <Frame
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="0"
             Margin="5,2.5,2.5,2.5"
             Padding="0"
@@ -138,13 +137,13 @@
             </Grid>
         </Frame>
         <Frame
-            Grid.Row="2"
-            Grid.Column="2"
-            Margin="2.5,2.5,5,2.5"
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="5,2.5,2.5,2.5"
             Padding="0"
             BorderColor="Transparent"
             CornerRadius="8"
-            IsVisible="False">
+            IsVisible="True">
             <Frame.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding SettingButtonCommand}" CommandParameter="1" />
             </Frame.GestureRecognizers>
