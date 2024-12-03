@@ -5,6 +5,8 @@ A simple demonstration on using C#/.NET/MAUI for:
 - Creating a dependency service *CSLReaderService* for accessing the readers
 - Device connectivity through BLE
 - Batch inventory
+- Geiger Search
+- Support for LED tags
 
 Dependencies:
 
@@ -16,4 +18,6 @@ Dependencies:
 
 <br/>
 
-![App Screens](/Images/AppScreens.png)
+![App Screen1](/Images/AppScreen1.png)
+<br><br>
+![App Screen2](/Images/AppScreen2.png)

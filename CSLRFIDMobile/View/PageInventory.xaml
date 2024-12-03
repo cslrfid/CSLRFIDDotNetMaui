@@ -20,7 +20,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="30" />
+            <RowDefinition Height="50" />
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
         <ListView
@@ -156,8 +156,8 @@
             Margin="5,0,5,0"
             IsVisible="{Binding IsRfidReaderMode}"
             Orientation="Horizontal">
-            <Label Text="Count: " VerticalTextAlignment="Center" />
-            <Label Text="{Binding TagCount}" VerticalTextAlignment="Center" />
+            <Label Text="Flash LEDs" VerticalTextAlignment="Center" />
+            <Switch x:Name="switchFlashTags" IsToggled="{Binding SwitchFlashTagsIsToggled, Mode=TwoWay}" />
         </StackLayout>
 
         <StackLayout
@@ -169,6 +169,16 @@
             <Label
                 Text="{Binding LabelVoltage}"
                 TextColor="{Binding LabelVoltageTextColor}"
+                VerticalTextAlignment="Center" />
+            <Label
+                HorizontalOptions="EndAndExpand"
+                IsVisible="{Binding IsRfidReaderMode}"
+                Text="Count: "
+                VerticalTextAlignment="Center" />
+            <Label
+                HorizontalOptions="StartAndExpand"
+                IsVisible="{Binding IsRfidReaderMode}"
+                Text="{Binding TagCount}"
                 VerticalTextAlignment="Center" />
         </StackLayout>
 

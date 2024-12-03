@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Plugin.Maui.Audio;
 using CSLRFIDMobile.Helper;
 using CSLRFIDMobile.View;
+using CSLibrary.Constants;
 
 namespace CSLRFIDMobile.ViewModel
 {
@@ -51,6 +52,10 @@ namespace CSLRFIDMobile.ViewModel
 
         [ObservableProperty]
         private string entryEPC = String.Empty;
+
+        [ObservableProperty]
+        public bool switchFlashTagsIsToggled = false;
+
 
         public IDispatcherTimer? timer;
 
@@ -104,6 +109,15 @@ namespace CSLRFIDMobile.ViewModel
             RadialGaugeRSSIValue = 0;
 
             _progressBarRollingWindow.Clear();
+
+            if (SwitchFlashTagsIsToggled)
+            {
+                InventoryLedSetting();
+            }
+            else
+            {
+                InventorySetting();
+            }
 
             _cslReaderService.reader?.rfid.SetPowerLevel(_cslReaderService.config?.RFID_Antenna_Power);
 
@@ -182,6 +196,50 @@ namespace CSLRFIDMobile.ViewModel
             _cslReaderService.reader!.rfid.Options.TagRanging.multibanks = 0;
             _cslReaderService.reader!.rfid.Options.TagRanging.compactmode = true;
             _cslReaderService.reader!.rfid.Options.TagRanging.focus = _cslReaderService.config!.RFID_Focus;
+        }
+
+        void InventoryLedSetting()
+        {
+            // Optimatize for LED Light
+
+            // Cancel old setting
+            _cslReaderService.reader!.rfid.CancelAllSelectCriteria();
+            _cslReaderService.reader!.rfid.SetPowerSequencing(0);
+
+            _cslReaderService.reader!.rfid.SetTagDelayTime(0);
+            _cslReaderService.reader!.rfid.SetIntraPacketDelayTime(0);
+            _cslReaderService.reader!.rfid.SetDuplicateEliminationRollingWindow(0);
+            _cslReaderService.reader!.rfid.SetInventoryDuration(0);
+            _cslReaderService.config!.RFID_FixedQParms.qValue = 0;
+            _cslReaderService.config!.RFID_FixedQParms.toggleTarget = 1;
+            _cslReaderService.reader!.rfid.SetFixedQParms(_cslReaderService.config!.RFID_FixedQParms);
+            _cslReaderService.reader!.rfid.SetCurrentSingulationAlgorithm(CSLibrary.Constants.SingulationAlgorithm.FIXEDQ);
+            _cslReaderService.reader!.rfid.SetRSSIFilter(CSLibrary.Constants.RSSIFILTERTYPE.DISABLE);
+            switch (_cslReaderService.reader!.rfid.GetModel())
+            {
+                case CSLibrary.RFIDDEVICE.MODEL.CS710S:
+                    if (_cslReaderService.reader!.rfid.GetCountry() == 1)
+                        _cslReaderService.reader!.rfid.SetCurrentLinkProfile(241);
+                    else
+                        _cslReaderService.reader!.rfid.SetCurrentLinkProfile(244);
+                    break;
+
+                default:
+                    _cslReaderService.reader!.rfid.SetCurrentLinkProfile(_cslReaderService.config!.RFID_Profile);
+                    break;
+            }
+            _cslReaderService.reader!.rfid.SetOperationMode(CSLibrary.Constants.RadioOperationMode.CONTINUOUS);
+            _cslReaderService.reader!.rfid.SetTagGroup(Selected.ASSERTED, Session.S0, SessionTarget.A);
+
+            // Multi bank inventory
+            _cslReaderService.reader!.rfid.Options.TagRanging.flags = CSLibrary.Constants.SelectFlags.SELECT;
+            _cslReaderService.reader!.rfid.Options.TagRanging.compactmode = false;
+            _cslReaderService.reader!.rfid.Options.TagRanging.focus = false;
+
+            _cslReaderService.reader!.rfid.Options.TagRanging.multibanks = 1;
+            _cslReaderService.reader!.rfid.Options.TagRanging.bank1 = CSLibrary.Constants.MemoryBank.USER;
+            _cslReaderService.reader!.rfid.Options.TagRanging.offset1 = 112;
+            _cslReaderService.reader!.rfid.Options.TagRanging.count1 = 1;
         }
 
         public void TagSearchOneEvent(object sender, CSLibrary.Events.OnAsyncCallbackEventArgs e)

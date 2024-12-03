@@ -89,6 +89,19 @@
                 HorizontalOptions="CenterAndExpand"
                 HorizontalTextAlignment="Start"
                 Text="{Binding RadialGaugeRSSIValue}" />
+            <StackLayout
+                Grid.Row="2"
+                Grid.ColumnSpan="2"
+                Margin="5,0,5,0"
+                HorizontalOptions="CenterAndExpand"
+                IsVisible="{Binding IsRfidReaderMode}"
+                Orientation="Horizontal">
+                <Label
+                    FontSize="Medium"
+                    Text="Flash LED:   "
+                    VerticalTextAlignment="Center" />
+                <Switch x:Name="switchFlashTags" IsToggled="{Binding SwitchFlashTagsIsToggled, Mode=TwoWay}" />
+            </StackLayout>
             <Button
                 Margin="50"
                 BackgroundColor="{StaticResource Primary}"

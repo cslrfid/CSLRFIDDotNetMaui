@@ -42,6 +42,9 @@ namespace CSLRFIDMobile.ViewModel
         [NotifyPropertyChangedFor(nameof(IsBarcodeReaderMode))]
         public string readerModeImage = "rfid.svg";
 
+        [ObservableProperty]
+        public bool switchFlashTagsIsToggled = false;
+
         public bool IsRfidReaderMode => ReaderModeImage == "rfid.svg";
         public bool IsBarcodeReaderMode => ReaderModeImage == "barcode.svg";
 
@@ -199,6 +202,55 @@ namespace CSLRFIDMobile.ViewModel
             _InventoryScanning = true;
             StartInventoryButtonText = "Stop Inventory";
 
+            _cslReaderService.reader!.rfid.CancelAllSelectCriteria();
+            _cslReaderService.reader!.rfid.Options.TagRanging.flags = CSLibrary.Constants.SelectFlags.ZERO;
+
+            if (SwitchFlashTagsIsToggled)
+            {
+                switch (_cslReaderService.reader!.rfid.GetModel())
+                {
+                    case CSLibrary.RFIDDEVICE.MODEL.CS710S:
+                        if (_cslReaderService.reader!.rfid.GetCountry() == 1)
+                            _cslReaderService.reader!.rfid.SetCurrentLinkProfile(241);
+                        else
+                            _cslReaderService.reader!.rfid.SetCurrentLinkProfile(244);
+                        break;
+
+                    default:
+                        _cslReaderService.reader!.rfid.SetCurrentLinkProfile(_cslReaderService.config!.RFID_Profile);
+                        break;
+                }
+
+                // Select Criteria filter for LED Tag
+                _cslReaderService.reader!.rfid.Options.TagRanging.flags = CSLibrary.Constants.SelectFlags.SELECT;
+                _cslReaderService.reader!.rfid.Options.TagSelected.bank = CSLibrary.Constants.MemoryBank.TID;
+                _cslReaderService.reader!.rfid.Options.TagSelected.Mask = new byte[] { 0xE2, 0x01, 0xE2 };
+                _cslReaderService.reader!.rfid.Options.TagSelected.MaskOffset = 0;
+                _cslReaderService.reader!.rfid.Options.TagSelected.MaskLength = 24;
+
+
+                _cslReaderService.reader!.rfid.StartOperation(CSLibrary.Constants.Operation.TAG_PREFILTER);
+
+                _cslReaderService.reader!.rfid.Options.TagRanging.multibanks = 1;
+                //_cslReaderService.reader!.rfid.Options.TagRanging.bank1 = CSLibrary.Constants.MemoryBank.TID;
+                //_cslReaderService.reader!.rfid.Options.TagRanging.offset1 = 0;
+                //_cslReaderService.reader!.rfid.Options.TagRanging.count1 = 6;
+
+                _cslReaderService.reader!.rfid.Options.TagRanging.bank1 = CSLibrary.Constants.MemoryBank.USER;
+                _cslReaderService.reader!.rfid.Options.TagRanging.offset1 = 112;
+                _cslReaderService.reader!.rfid.Options.TagRanging.count1 = 1;
+
+                _cslReaderService.reader!.rfid.Options.TagRanging.compactmode = false;
+                
+            }
+            else
+            {                
+                _cslReaderService.reader!.rfid.Options.TagRanging.multibanks = 0;
+                _cslReaderService.reader!.rfid.Options.TagRanging.compactmode = true;
+                InventorySetting();
+            }
+
+            _cslReaderService.reader!.rfid.StartOperation(CSLibrary.Constants.Operation.TAG_PRERANGING);
             _cslReaderService.reader?.rfid.StartOperation(CSLibrary.Constants.Operation.TAG_RANGING);
             ClassBattery.SetBatteryMode(ClassBattery.BATTERYMODE.INVENTORY);
         }
