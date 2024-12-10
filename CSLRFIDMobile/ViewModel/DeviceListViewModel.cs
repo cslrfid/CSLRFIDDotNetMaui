@@ -74,6 +74,8 @@ namespace CSLRFIDMobile.ViewModel
                 CSLibrary.Debug.WriteLine($"Device disconnect error: {ex.Message}");
             }
 
+            PerformScanForDevices();
+
         }
 
         private string GetStateText()
