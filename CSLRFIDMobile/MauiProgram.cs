@@ -83,7 +83,7 @@ namespace CSLRFIDMobile
             builder.Services.AddTransient<PageSettingAdministration>();
             builder.Services.AddTransient<PageSettingAntenna>();
             builder.Services.AddTransient<PageSettingOperation>();
-            builder.Services.AddTransient<PageSettingPower>();
+            builder.Services.AddTransient<PageSettingPowerSequencing>();
 
             return builder.Build();
         }

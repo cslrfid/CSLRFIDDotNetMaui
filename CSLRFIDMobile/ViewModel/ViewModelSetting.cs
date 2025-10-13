@@ -38,7 +38,7 @@ namespace CSLRFIDMobile.ViewModel
         [RelayCommand]
         async Task SettingPowerSequencing()
         {
-            await Shell.Current.GoToAsync(nameof(PageSettingPower), true);
+            await Shell.Current.GoToAsync(nameof(PageSettingPowerSequencing), true);
         }
 
         [RelayCommand]

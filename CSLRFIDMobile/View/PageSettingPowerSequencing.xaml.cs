@@ -7,11 +7,11 @@ using CSLRFIDMobile.Services;
 
 namespace CSLRFIDMobile.View
 {
-	public partial class PageSettingPower : ContentPage
+	public partial class PageSettingPowerSequencing : ContentPage
     {
         private readonly CSLReaderService _cslReaderService;
 
-        public PageSettingPower(CSLReaderService cslReaderService)
+        public PageSettingPowerSequencing(CSLReaderService cslReaderService)
         {
             InitializeComponent();
 
