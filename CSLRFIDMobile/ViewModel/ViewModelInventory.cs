@@ -40,13 +40,13 @@ namespace CSLRFIDMobile.ViewModel
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsRfidReaderMode))]
         [NotifyPropertyChangedFor(nameof(IsBarcodeReaderMode))]
-        public string readerModeImage = "rfid.svg";
+        public string readerModeImage = "rfid.png";
 
         [ObservableProperty]
         public bool switchFlashTagsIsToggled = false;
 
-        public bool IsRfidReaderMode => ReaderModeImage == "rfid.svg";
-        public bool IsBarcodeReaderMode => ReaderModeImage == "barcode.svg";
+        public bool IsRfidReaderMode => ReaderModeImage == "rfid.png";
+        public bool IsBarcodeReaderMode => ReaderModeImage == "barcode.png";
 
 
         [RelayCommand]
@@ -123,9 +123,9 @@ namespace CSLRFIDMobile.ViewModel
         [RelayCommand]
         private void ReadModeChange()
         {
-            if (ReaderModeImage == "rfid.svg")
+            if (ReaderModeImage == "rfid.png")
             {
-                ReaderModeImage = "barcode.svg";
+                ReaderModeImage = "barcode.png";
                 StartInventoryButtonText = "Start Scan";
                 ClearButton();
                 SetEvent(true);
@@ -133,7 +133,7 @@ namespace CSLRFIDMobile.ViewModel
             }
             else
             {
-                ReaderModeImage = "rfid.svg";
+                ReaderModeImage = "rfid.png";
                 StartInventoryButtonText = "Start Inventory";
                 ClearButton();
                 SetEvent(true);

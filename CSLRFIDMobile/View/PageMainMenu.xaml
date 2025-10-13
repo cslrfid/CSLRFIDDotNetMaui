@@ -8,22 +8,25 @@
     xmlns:viewmodel="clr-namespace:CSLRFIDMobile.ViewModel"
     Title="Home">
     <Grid ColumnDefinitions="*,*" RowDefinitions="*,*,*,*,100,30">
-        <Frame
+        <Border
             Grid.Row="0"
             Grid.Column="0"
             Margin="5,5,2.5,2.5"
             Padding="0"
-            BorderColor="Transparent"
-            CornerRadius="8">
-            <Frame.GestureRecognizers>
+            Stroke="Transparent"
+            StrokeThickness="0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding InventoryButtonCommand}" CommandParameter="1" />
-            </Frame.GestureRecognizers>
+            </Border.GestureRecognizers>
             <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="7.5*" />
                     <RowDefinition Height="2.5*" />
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="inventory.svg" />
+                <Image Grid.Row="0" Source="inventory.png" />
                 <Label
                     Grid.Row="1"
                     FontAttributes="Bold"
@@ -32,23 +35,27 @@
                     Text="Inventory"
                     TextColor="{StaticResource White}" />
             </Grid>
-        </Frame>
-        <Frame
+        </Border>
+
+        <Border
             Grid.Row="0"
             Grid.Column="1"
             Margin="2.5,5,5,2.5"
             Padding="0"
-            BorderColor="Transparent"
-            CornerRadius="8">
-            <Frame.GestureRecognizers>
+            Stroke="Transparent"
+            StrokeThickness="0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding GeigerButtonCommand}" CommandParameter="1" />
-            </Frame.GestureRecognizers>
+            </Border.GestureRecognizers>
             <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="7.5*" />
                     <RowDefinition Height="2.5*" />
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="search.svg" />
+                <Image Grid.Row="0" Source="search.png" />
                 <Label
                     Grid.Row="1"
                     FontAttributes="Bold"
@@ -57,24 +64,28 @@
                     Text="Geiger Search"
                     TextColor="{StaticResource White}" />
             </Grid>
-        </Frame>
-        <Frame
+        </Border>
+
+        <Border
             Grid.Row="2"
             Grid.Column="0"
             Margin="5,2.5,2.5,2.5"
             Padding="0"
-            BorderColor="Transparent"
-            CornerRadius="8"
+            Stroke="Transparent"
+            StrokeThickness="0"
             IsVisible="False">
-            <Frame.GestureRecognizers>
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding RegisterTagButtonCommand}" CommandParameter="1" />
-            </Frame.GestureRecognizers>
+            </Border.GestureRecognizers>
             <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="7.5*" />
                     <RowDefinition Height="2.5*" />
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="register.svg" />
+                <Image Grid.Row="0" Source="register.png" />
                 <Label
                     Grid.Row="1"
                     FontAttributes="Bold"
@@ -83,24 +94,28 @@
                     Text="Register"
                     TextColor="{StaticResource White}" />
             </Grid>
-        </Frame>
-        <Frame
+        </Border>
+
+        <Border
             Grid.Row="1"
             Grid.Column="1"
             Margin="2.5,2.5,5,2.5"
             Padding="0"
-            BorderColor="Transparent"
-            CornerRadius="8"
+            Stroke="Transparent"
+            StrokeThickness="0"
             IsVisible="False">
-            <Frame.GestureRecognizers>
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding SpecialFuncButtonCommand}" CommandParameter="1" />
-            </Frame.GestureRecognizers>
+            </Border.GestureRecognizers>
             <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="7.5*" />
                     <RowDefinition Height="2.5*" />
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="function.svg" />
+                <Image Grid.Row="0" Source="function.png" />
                 <Label
                     Grid.Row="1"
                     FontAttributes="Bold"
@@ -109,24 +124,28 @@
                     Text="Special Functions"
                     TextColor="{StaticResource White}" />
             </Grid>
-        </Frame>
-        <Frame
+        </Border>
+
+        <Border
             Grid.Row="2"
             Grid.Column="0"
             Margin="5,2.5,2.5,2.5"
             Padding="0"
-            BorderColor="Transparent"
-            CornerRadius="8"
+            Stroke="Transparent"
+            StrokeThickness="0"
             IsVisible="False">
-            <Frame.GestureRecognizers>
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding ReadWriteButtonCommand}" CommandParameter="1" />
-            </Frame.GestureRecognizers>
+            </Border.GestureRecognizers>
             <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="7.5*" />
                     <RowDefinition Height="2.5*" />
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="write.svg" />
+                <Image Grid.Row="0" Source="write.png" />
                 <Label
                     Grid.Row="1"
                     FontAttributes="Bold"
@@ -135,24 +154,28 @@
                     Text="Read/Write"
                     TextColor="{StaticResource White}" />
             </Grid>
-        </Frame>
-        <Frame
+        </Border>
+
+        <Border
             Grid.Row="1"
             Grid.Column="0"
             Margin="5,2.5,2.5,2.5"
             Padding="0"
-            BorderColor="Transparent"
-            CornerRadius="8"
+            Stroke="Transparent"
+            StrokeThickness="0"
             IsVisible="True">
-            <Frame.GestureRecognizers>
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding SettingButtonCommand}" CommandParameter="1" />
-            </Frame.GestureRecognizers>
+            </Border.GestureRecognizers>
             <Grid Padding="5" BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="7.5*" />
                     <RowDefinition Height="2.5*" />
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="settings.svg" />
+                <Image Grid.Row="0" Source="settings.png" />
                 <Label
                     Grid.Row="1"
                     FontAttributes="Bold"
@@ -161,24 +184,28 @@
                     Text="Settings"
                     TextColor="{StaticResource White}" />
             </Grid>
-        </Frame>
-        <Frame
+        </Border>
+
+        <Border
             Grid.Row="3"
             Grid.Column="0"
             Margin="5,2.5,2.5,2.5"
             Padding="0"
-            BorderColor="Transparent"
-            CornerRadius="8"
+            Stroke="Transparent"
+            StrokeThickness="0"
             IsVisible="False">
-            <Frame.GestureRecognizers>
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding SecurityButtonCommand}" CommandParameter="1" />
-            </Frame.GestureRecognizers>
+            </Border.GestureRecognizers>
             <Grid BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="7.5*" />
                     <RowDefinition Height="2.5*" />
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="security.svg" />
+                <Image Grid.Row="0" Source="security.png" />
                 <Label
                     Grid.Row="1"
                     FontAttributes="Bold"
@@ -187,24 +214,28 @@
                     Text="Security"
                     TextColor="{StaticResource White}" />
             </Grid>
-        </Frame>
-        <Frame
+        </Border>
+
+        <Border
             Grid.Row="3"
             Grid.Column="1"
             Margin="2.5,2.5,5,2.5"
             Padding="0"
-            BorderColor="Transparent"
-            CornerRadius="8"
+            Stroke="Transparent"
+            StrokeThickness="0"
             IsVisible="False">
-            <Frame.GestureRecognizers>
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding FilterButtonCommand}" CommandParameter="1" />
-            </Frame.GestureRecognizers>
+            </Border.GestureRecognizers>
             <Grid BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="7.5*" />
                     <RowDefinition Height="2.5*" />
                 </Grid.RowDefinitions>
-                <Image Grid.Row="0" Source="filter.svg" />
+                <Image Grid.Row="0" Source="filter.png" />
                 <Label
                     Grid.Row="1"
                     FontAttributes="Bold"
@@ -213,18 +244,21 @@
                     Text="RFID Filter"
                     TextColor="{StaticResource White}" />
             </Grid>
-        </Frame>
+        </Border>
 
-        <Frame
+        <Border
             Grid.Row="4"
             Grid.ColumnSpan="2"
             Margin="5,2.5,5,2.5"
             Padding="0"
-            BorderColor="{StaticResource Black}"
-            CornerRadius="8">
-            <Frame.GestureRecognizers>
+            Stroke="{StaticResource Black}"
+            StrokeThickness="1">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="8" />
+            </Border.StrokeShape>
+            <Border.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding ConnectButtonCommand}" CommandParameter="1" />
-            </Frame.GestureRecognizers>
+            </Border.GestureRecognizers>
             <Grid BackgroundColor="{StaticResource Primary}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -237,7 +271,7 @@
                     TextColor="White"
                     VerticalOptions="CenterAndExpand" />
             </Grid>
-        </Frame>
+        </Border>
 
         <StackLayout
             Grid.Row="5"
@@ -245,13 +279,11 @@
             Margin="5,0,5,0"
             IsVisible="{Binding IsBatteryLevelVisible}"
             Orientation="Horizontal">
-            <Image Source="battery.svg" />
+            <Image Source="battery.png" />
             <Label
                 Text="{Binding LabelVoltage}"
                 TextColor="{Binding LabelVoltageTextColor}"
                 VerticalTextAlignment="Center" />
         </StackLayout>
     </Grid>
-
-
 </mvvm:TinyView>
