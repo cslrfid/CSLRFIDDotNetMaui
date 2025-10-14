@@ -10,11 +10,11 @@ A simple demonstration on using C#/.NET/MAUI for:
 
 Dependencies:
 
-- [.NET MAUI 8+](https://dotnet.microsoft.com/en-us/download/dotnet)
+- [.NET 9](https://dotnet.microsoft.com/en-us/download/dotnet)
 - [Bluetooth LE plugin for Xamarin & MAUI](https://github.com/dotnet-bluetooth-le/dotnet-bluetooth-le)
 - [MVVM Community Toolkit](https://github.com/CommunityToolkit/MVVM-Samples)
 - [TinyMVVM](https://github.com/dhindrik/TinyMvvm)
-- [Controls.Userdialogs.Maui](https://github.com/Alex-Dobrynin/Controls.UserDialogs.Maui) for MAUI only works for iOS/Android but not WinUI
+- [Syncfusion .NET MAUI Toolkit](https://www.syncfusion.com/net-maui-toolkit)
 
 <br/>
 
