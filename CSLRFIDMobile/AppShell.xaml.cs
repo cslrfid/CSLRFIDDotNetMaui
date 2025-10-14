@@ -13,6 +13,7 @@ namespace CSLRFIDMobile
             Routing.RegisterRoute(nameof(PageGeigerSearch), typeof(PageGeigerSearch));
             Routing.RegisterRoute(nameof(PageGeigerSettings), typeof(PageGeigerSettings));
             Routing.RegisterRoute(nameof(PageAbout), typeof(PageAbout));
+            Routing.RegisterRoute(nameof(PageTabbedSetting), typeof(PageTabbedSetting));
             Routing.RegisterRoute(nameof(PageSetting), typeof(PageSetting));
             Routing.RegisterRoute(nameof(PageSettingAdministration), typeof(PageSettingAdministration));
             Routing.RegisterRoute(nameof(PageSettingAntenna), typeof(PageSettingAntenna));

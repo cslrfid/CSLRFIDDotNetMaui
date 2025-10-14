@@ -1,4 +1,4 @@
-using Controls.UserDialogs.Maui;
+using CSLRFIDMobile.Services.Popups;
 using CSLRFIDMobile.Services;
 using CSLRFIDMobile.Model;
 using System.Windows.Input;
@@ -11,7 +11,7 @@ namespace CSLRFIDMobile.ViewModel
 {
     public partial class ViewModelGeigerSearch : BaseViewModel, IDisposable
     {
-        private readonly IUserDialogs _userDialogs;
+        private readonly IPopupService _popupService;
         private readonly CSLReaderService _cslReaderService;
         private readonly IAudioManager _audioManager;
 
@@ -80,9 +80,9 @@ namespace CSLRFIDMobile.ViewModel
         int _beepSoundCount = 0;
         int _noTagCount = 0;
 
-        public ViewModelGeigerSearch(IUserDialogs userDialogs, CSLReaderService cslReaderService, IAudioManager audioManager)
+        public ViewModelGeigerSearch(IPopupService popupService, CSLReaderService cslReaderService, IAudioManager audioManager)
         {
-            _userDialogs = userDialogs;
+            _popupService = popupService;
             _cslReaderService = cslReaderService;
             _audioManager = audioManager;
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Controls.UserDialogs.Maui;
+using CSLRFIDMobile.Services.Popups;
 using CSLRFIDMobile.Services;
 using CSLRFIDMobile.View;
 using Plugin.BLE;
@@ -20,8 +20,9 @@ namespace CSLRFIDMobile.ViewModel
 {
     public partial class DeviceListViewModel : BaseViewModel
     {
-        private readonly IUserDialogs _userDialogs;
+        private readonly IPopupService _popupService;
         private readonly CSLReaderService _cslReaderService;
+        private readonly AppStateService _appStateService;
 
 
         private CancellationTokenSource? _cancellationTokenSource = new CancellationTokenSource();
@@ -58,10 +59,11 @@ namespace CSLRFIDMobile.ViewModel
         public bool isScanning;
 
 
-        public DeviceListViewModel(CSLReaderService appStateService, IUserDialogs userDialogs)
+        public DeviceListViewModel(CSLReaderService cslReaderService, IPopupService popupService, AppStateService appStateService)
         {
-            _userDialogs = userDialogs;
-            _cslReaderService = appStateService;
+            _popupService = popupService;
+            _cslReaderService = cslReaderService;
+            _appStateService = appStateService;
 
             _cslReaderService.adapter.DeviceDisconnected += OnDeviceDisconnected!;
 
@@ -96,13 +98,13 @@ namespace CSLRFIDMobile.ViewModel
                         return "BLE is turning off. That's sad!";
                     case BluetoothState.Off:
                         if (DeviceInfo.Current.Platform == DevicePlatform.iOS)
-                            _userDialogs.Alert("Please put finger at bottom of screen and swipe up “Control Center” and turn on Bluetooth.  If Bluetooth is already on, turn it off and on again");
+                            _ = _popupService.AlertAsync("Please put finger at bottom of screen and swipe up \"Control Center\" and turn on Bluetooth.  If Bluetooth is already on, turn it off and on again");
                         return "BLE is off. Turn it on!";
                 }
             }
             catch (Exception ex)
             {
-                _userDialogs.Alert(ex.Message, "GetState Error");
+                _ = _popupService.AlertAsync(ex.Message, "GetState Error");
             }
 
             return "Unknown BLE state.";
@@ -219,8 +221,15 @@ namespace CSLRFIDMobile.ViewModel
         {
             await base.OnAppearing();
 
+            // Clear previously linked BLE device Id to force fresh scanning/connection
+            if (!string.IsNullOrEmpty(_appStateService.Settings.CSLLinkedDeviceId))
+            {
+                _appStateService.Settings.CSLLinkedDeviceId = string.Empty;
+                await _appStateService.SaveConfig();
+            }
+
             _cslReaderService.SetEvent(true);
-          
+
         }
 
         public List<DeviceListItemViewModel> SystemDevices { get; private set; } = new List<DeviceListItemViewModel>();
@@ -279,13 +288,13 @@ namespace CSLRFIDMobile.ViewModel
                 if (!device.IsConnected)
                     return;
 
-                _userDialogs.ShowLoading($"Disconnecting {device.Name}...");
+                await _popupService.ShowLoadingAsync($"Disconnecting {device.Name}...");
 
                 await _cslReaderService.adapter.DisconnectDeviceAsync(device.Device);
             }
             catch (Exception ex)
             {
-                await _userDialogs.AlertAsync(ex.Message, "Disconnect error");
+                await _popupService.AlertAsync(ex.Message, "Disconnect error");
             }
             finally
             {
@@ -297,12 +306,12 @@ namespace CSLRFIDMobile.ViewModel
         {
             try
             {
-                if (!await _userDialogs.ConfirmAsync($"Connect to device '{device.Name}'?"))
-                {                    
+                if (!await _popupService.ConfirmAsync($"Connect to device '{device.Name}'?"))
+                {
                     return;
                 }
 
-                _userDialogs.Loading($"Connecting to {device.Name}...");
+                await _popupService.ShowLoadingAsync($"Connecting to {device.Name}...");
 
                 // cancel search
                 _cancellationTokenSource?.Cancel();
@@ -310,20 +319,20 @@ namespace CSLRFIDMobile.ViewModel
 
                 if (!await _cslReaderService.ConnectDeviceAsync(device))
                 {
-                    _userDialogs.HideHud();
+                    await _popupService.HideLoadingAsync();
                     SelectedDevice = null;
-                    await _userDialogs.AlertAsync($"Unable to connect to device {device.Name}");
+                    await _popupService.AlertAsync($"Unable to connect to device {device.Name}");
                 }
                 else
                 {
-                    _userDialogs.HideHud();
-                    await Shell.Current.GoToAsync("..", true);                    
+                    await _popupService.HideLoadingAsync();
+                    await Shell.Current.GoToAsync("..", true);
                 }
             }
             catch (Exception ex)
             {
                 SelectedDevice = null;
-                await _userDialogs.AlertAsync(ex.Message, "Connection error");
+                await _popupService.AlertAsync(ex.Message, "Connection error");
             }
 
         }
@@ -341,19 +350,19 @@ namespace CSLRFIDMobile.ViewModel
             }
             catch (Exception ex)
             {
-                _userDialogs.Alert(ex.Message, "Failed to connect and dispose.");
+                _ = _popupService.AlertAsync(ex.Message, "Failed to connect and dispose.");
             }
             finally
             {
-                _userDialogs.HideHud();
+                await _popupService.HideLoadingAsync();
             }
         }
 
-        private void OnDeviceDisconnected(object sender, DeviceEventArgs e)
+        private async void OnDeviceDisconnected(object sender, DeviceEventArgs e)
         {
             Devices.FirstOrDefault(d => d.Id == e.Device.Id)?.Update();
-            _userDialogs.HideHud();
-            _userDialogs.ShowToast($"Disconnected {e.Device.Name}");
+            await _popupService.HideLoadingAsync();
+            await _popupService.ShowToastAsync($"Disconnected {e.Device.Name}");
         }
 
         [RelayCommand]
@@ -377,7 +386,7 @@ namespace CSLRFIDMobile.ViewModel
    
             if (!await HasCorrectPermissions())
             {
-                await _userDialogs.AlertAsync("Permissons fail - can't scan");
+                await _popupService.AlertAsync("Permissons fail - can't scan");
                 return;
             }
 
@@ -421,7 +430,7 @@ namespace CSLRFIDMobile.ViewModel
                 permissionResult = await Permissions.RequestAsync<Permissions.Bluetooth>();
             if (permissionResult != PermissionStatus.Granted)
             {
-                await _userDialogs.AlertAsync("Permission denied. Not scanning.");
+                await _popupService.AlertAsync("Permission denied. Not scanning.");
                 AppInfo.ShowSettingsUI();
                 return false;
             }
