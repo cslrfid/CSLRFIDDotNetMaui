@@ -5,7 +5,8 @@ using CSLRFIDMobile.Model;
 using Newtonsoft.Json;
 using Plugin.BLE;
 using Plugin.BLE.Abstractions;
-using Controls.UserDialogs.Maui;
+using CSLRFIDMobile.Services.Popups;
+using Plugin.BLE.Abstractions.Extensions;
 
 
 namespace CSLRFIDMobile.Services
@@ -28,7 +29,8 @@ namespace CSLRFIDMobile.Services
         public CONFIG? config;
         public event EventHandler<CSLBatteryLevelEventArgs>? BatteryLevelEvent;
 
-        private readonly IUserDialogs _userDialogs;
+        private readonly IPopupService _popupService;
+        private readonly AppStateService _appStateService;
         public IBluetoothLE? bluetoothLe;
         public IAdapter adapter;
 
@@ -49,14 +51,21 @@ namespace CSLRFIDMobile.Services
         public bool _batteryLow = false;
         public string _labelVoltage = String.Empty;
 
+        // Linked reader serial number for auto-reconnect validation
+        public string LinkedReaderSn { get; set; } = String.Empty;
+
         private bool IsInitializationCompleted = false;
 
-        public CSLReaderService(IUserDialogs userDialogs)
+        public CSLReaderService(IPopupService popupService, AppStateService appStateService)
         {
-            _userDialogs = userDialogs;
+            _popupService = popupService;
+            _appStateService = appStateService;
 
             bluetoothLe = CrossBluetoothLE.Current;
             adapter = bluetoothLe?.Adapter!;
+
+            // Preload previously linked serial number if any
+            LinkedReaderSn = _appStateService.Settings.CSLLinkedDevice ?? string.Empty;
 
             SetEvent(true);
         }
@@ -78,6 +87,15 @@ namespace CSLRFIDMobile.Services
                 //wait unit initialization completed otherwise will be timed out
                 IsInitializationCompleted = false;
 
+                // Ensure linked SN preference is loaded
+                if (string.IsNullOrEmpty(LinkedReaderSn))
+                    LinkedReaderSn = _appStateService.Settings.CSLLinkedDevice ?? string.Empty;
+
+                if (config == null)
+                {
+                    await LoadConfig(LinkedReaderSn, device.BTServiceType);
+                }
+
                 await Connect(dev, device.BTServiceType);
                 DateTime timer = DateTime.Now;
                 while ((DateTime.Now - timer).TotalSeconds < 10.00 )
@@ -92,7 +110,7 @@ namespace CSLRFIDMobile.Services
             }
             catch (Exception ex)
             {
-                await _userDialogs.AlertAsync(ex.Message, "Connection error");
+                await _popupService.AlertAsync(ex.Message, "Connection error");
                 CSLibrary.Debug.WriteLine(ex.Message);
                 return false;
             }
@@ -143,7 +161,7 @@ namespace CSLRFIDMobile.Services
                 {
                     case CSLibrary.Constants.ReaderCallbackType.COMMUNICATION_ERROR:
                         {
-                            _userDialogs.AlertAsync("BLE protocol error, Please reset reader");
+                            _ = _popupService.AlertAsync("BLE protocol error, Please reset reader");
 
                         }
                         break;
@@ -158,10 +176,31 @@ namespace CSLRFIDMobile.Services
             });
         }
 
-        void StateChangedEvent(object sender, CSLibrary.Events.OnStateChangedEventArgs e)
+        async void StateChangedEvent(object sender, CSLibrary.Events.OnStateChangedEventArgs e)
         {
             if (e.state == CSLibrary.Constants.RFState.INITIALIZATION_COMPLETE)
             {
+                // Get device serial number for validation
+                string deviceSn = reader?.rfid.GetModelName() == "CS108" ?
+                    reader!.siliconlabIC.GetSerialNumberSync().Substring(0, 13) :
+                    reader!.siliconlabIC.GetSerialNumberSync().Substring(0, 16);
+
+                // Allow first-time connection if no linked SN stored
+                if (!string.IsNullOrEmpty(LinkedReaderSn) && LinkedReaderSn != deviceSn)
+                {
+                    await _popupService.HideLoadingAsync();
+                    await _popupService.ShowToastAsync("RFID Reader Mismatch", duration: TimeSpan.FromSeconds(1));
+                    await reader!.DisconnectAsync();
+                    IsInitializationCompleted = true;
+                    return;
+                }
+
+                // Cache and persist linked reader info
+                LinkedReaderSn = deviceSn;
+                _appStateService.Settings.CSLLinkedDevice = deviceSn;
+                _appStateService.Settings.CSLLinkedDeviceId = deviceinfo?.Id.ToString() ?? string.Empty;
+                await _appStateService.SaveConfig();
+
                 if (reader!.rfid.GetModelName() == "CS710S-1" && config!.RFID_Profile == 244)
                     config.RFID_Profile = 241;
 
@@ -311,6 +350,191 @@ namespace CSLRFIDMobile.Services
             config.readerID = readerID;
             config.readerModel = readerModel;
             config.country = country;
+        }
+
+        /// <summary>
+        /// Connect to a previously known device by Id and auto-detect reader model
+        /// </summary>
+        public async Task<bool> ConnectKnownDeviceAsync(Guid deviceId)
+        {
+            try
+            {
+                CancellationTokenSource tokenSource = new CancellationTokenSource();
+
+                var dev = await adapter.ConnectToKnownDeviceAsync(deviceId, new ConnectParameters(autoConnect: false, forceBleTransport: true), tokenSource.Token);
+
+                if (dev == null)
+                    return false;
+
+                // Detect model by available service
+                MODEL model = MODEL.UNKNOWN;
+                try
+                {
+                    var svc710 = await dev.GetServiceAsync(Guid.Parse("00009802-0000-1000-8000-00805f9b34fb"));
+                    if (svc710 != null)
+                        model = MODEL.CS710S;
+                    else
+                    {
+                        var svc108 = await dev.GetServiceAsync(Guid.Parse("00009800-0000-1000-8000-00805f9b34fb"));
+                        if (svc108 != null)
+                            model = MODEL.CS108;
+                    }
+                }
+                catch { }
+
+                if (model == MODEL.UNKNOWN)
+                    return false;
+
+                //wait until initialization completed otherwise will be timed out
+                IsInitializationCompleted = false;
+
+                // Ensure linked SN preference is loaded
+                if (string.IsNullOrEmpty(LinkedReaderSn))
+                    LinkedReaderSn = _appStateService.Settings.CSLLinkedDevice ?? string.Empty;
+
+                await Connect(dev, model);
+                DateTime timer = DateTime.Now;
+                while ((DateTime.Now - timer).TotalSeconds < 10.00)
+                {
+                    if (IsInitializationCompleted)
+                        break;
+                    await Task.Delay(100);
+                }
+
+                return IsInitializationCompleted;
+            }
+            catch (Exception ex)
+            {
+                CSLibrary.Debug.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Try auto-reconnecting to the previously linked device id in settings
+        /// </summary>
+        public async Task<bool> TryAutoReconnectAsync()
+        {
+            try
+            {
+                string idStr = _appStateService.Settings.CSLLinkedDeviceId;
+                if (string.IsNullOrWhiteSpace(idStr))
+                    return false;
+                if (!Guid.TryParse(idStr, out var id))
+                    return false;
+
+                return await ConnectKnownDeviceAsync(id);
+            }
+            catch (Exception ex)
+            {
+                CSLibrary.Debug.WriteLine($"Auto-reconnect failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Scan for a specific device id and return it if discovered within timeout
+        /// </summary>
+        public async Task<IDevice?> FindDeviceByIdAsync(Guid deviceId, TimeSpan timeout, CancellationToken cancellationToken = default)
+        {
+            var tcs = new TaskCompletionSource<IDevice?>();
+            EventHandler<Plugin.BLE.Abstractions.EventArgs.DeviceEventArgs>? handler = null;
+            EventHandler<Plugin.BLE.Abstractions.EventArgs.DeviceEventArgs>? handlerAdv = null;
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+            handler = (s, e) =>
+            {
+                if (e.Device.Id == deviceId)
+                {
+                    tcs.TrySetResult(e.Device);
+                }
+            };
+            handlerAdv = (s, e) =>
+            {
+                if (e.Device.Id == deviceId)
+                {
+                    tcs.TrySetResult(e.Device);
+                }
+            };
+            adapter.DeviceDiscovered += handler;
+            adapter.DeviceAdvertised += handlerAdv;
+
+            try
+            {
+                cts.CancelAfter(timeout);
+
+                _ = adapter.StartScanningForDevicesAsync(cts.Token);
+
+                using (cts.Token.Register(() => tcs.TrySetResult(null)))
+                {
+                    var found = await tcs.Task.ConfigureAwait(false);
+                    return found;
+                }
+            }
+            catch (Exception ex)
+            {
+                CSLibrary.Debug.WriteLine($"FindDeviceByIdAsync error: {ex.Message}");
+                return null;
+            }
+            finally
+            {
+                adapter.DeviceDiscovered -= handler;
+                adapter.DeviceAdvertised -= handlerAdv;
+                try { await adapter.StopScanningForDevicesAsync(); } catch { }
+            }
+        }
+
+        /// <summary>
+        /// Scan once for the linked device id stored in settings
+        /// </summary>
+        public async Task<IDevice?> ScanLinkedDeviceOnceAsync(TimeSpan? scanTimeout = null, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                string idStr = _appStateService.Settings.CSLLinkedDeviceId;
+                if (string.IsNullOrWhiteSpace(idStr))
+                    return null;
+                if (!Guid.TryParse(idStr, out var id))
+                    return null;
+
+                return await FindDeviceByIdAsync(id, scanTimeout ?? TimeSpan.FromSeconds(2), cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                CSLibrary.Debug.WriteLine($"ScanLinkedDeviceOnceAsync error: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Connect to a device by id (wrapper for ConnectKnownDeviceAsync)
+        /// </summary>
+        public Task<bool> ConnectDeviceByIdAsync(Guid deviceId)
+        {
+            return ConnectKnownDeviceAsync(deviceId);
+        }
+
+        /// <summary>
+        /// Reconnect only if the previously linked device is currently advertising/present
+        /// </summary>
+        public async Task<bool> TryReconnectIfPresentAsync(TimeSpan? scanTimeout = null)
+        {
+            try
+            {
+                var found = await ScanLinkedDeviceOnceAsync(scanTimeout);
+                if (found == null)
+                    return false; // not present, skip reconnect
+
+                if (!Guid.TryParse(_appStateService.Settings.CSLLinkedDeviceId, out var id))
+                    return false;
+
+                return await ConnectDeviceByIdAsync(id);
+            }
+            catch (Exception ex)
+            {
+                CSLibrary.Debug.WriteLine($"TryReconnectIfPresentAsync error: {ex.Message}");
+                return false;
+            }
         }
 
     }

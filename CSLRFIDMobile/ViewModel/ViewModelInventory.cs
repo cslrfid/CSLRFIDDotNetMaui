@@ -1,4 +1,4 @@
-﻿using Controls.UserDialogs.Maui;
+﻿using CSLRFIDMobile.Services.Popups;
 using CSLRFIDMobile.Services;
 using CSLRFIDMobile.Model;
 using System.Security.Principal;
@@ -7,7 +7,7 @@ namespace CSLRFIDMobile.ViewModel
 {
     public partial class ViewModelInventory : BaseViewModel
     {
-        private readonly IUserDialogs _userDialogs;
+        private readonly IPopupService _popupService;
         private readonly CSLReaderService _cslReaderService;
 
         public ObservableCollection<TagInfoViewModel> TagInfoList { get; set; } = new();
@@ -19,9 +19,9 @@ namespace CSLRFIDMobile.ViewModel
 
         public Action? ClearRfidListView { get; set; }
 
-        public ViewModelInventory(IUserDialogs userDialogs, CSLReaderService cslReaderService)
+        public ViewModelInventory(IPopupService popupService, CSLReaderService cslReaderService)
         {
-            _userDialogs = userDialogs;
+            _popupService = popupService;
             _cslReaderService = cslReaderService;
 
             _cslReaderService.reader!.barcode.FastBarcodeMode(false);
@@ -40,13 +40,13 @@ namespace CSLRFIDMobile.ViewModel
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsRfidReaderMode))]
         [NotifyPropertyChangedFor(nameof(IsBarcodeReaderMode))]
-        public string readerModeImage = "rfid.svg";
+        public string readerModeImage = "rfid.png";
 
         [ObservableProperty]
         public bool switchFlashTagsIsToggled = false;
 
-        public bool IsRfidReaderMode => ReaderModeImage == "rfid.svg";
-        public bool IsBarcodeReaderMode => ReaderModeImage == "barcode.svg";
+        public bool IsRfidReaderMode => ReaderModeImage == "rfid.png";
+        public bool IsBarcodeReaderMode => ReaderModeImage == "barcode.png";
 
 
         [RelayCommand]
@@ -73,7 +73,7 @@ namespace CSLRFIDMobile.ViewModel
                 {
                     if (_cslReaderService.reader!.BLEBusy)
                     {
-                        _userDialogs.ShowToast("Configuring Reader, Please Wait", null, TimeSpan.FromSeconds(1));
+                        _ = _popupService.ShowToastAsync("Configuring Reader, Please Wait", null, TimeSpan.FromSeconds(1));
                     }
                     else
                     {
@@ -112,7 +112,7 @@ namespace CSLRFIDMobile.ViewModel
         {
             TagInfoViewModel tag =(TagInfoViewModel)((SelectedItemChangedEventArgs)obj).SelectedItem;
 
-            if (await _userDialogs.ConfirmAsync($"Select the tag '{tag.EPC}'?"))
+            if (await _popupService.ConfirmAsync($"Select the tag '{tag.EPC}'?"))
             {
                 _cslReaderService._SELECT_EPC = tag.EPC;
             }
@@ -123,9 +123,9 @@ namespace CSLRFIDMobile.ViewModel
         [RelayCommand]
         private void ReadModeChange()
         {
-            if (ReaderModeImage == "rfid.svg")
+            if (ReaderModeImage == "rfid.png")
             {
-                ReaderModeImage = "barcode.svg";
+                ReaderModeImage = "barcode.png";
                 StartInventoryButtonText = "Start Scan";
                 ClearButton();
                 SetEvent(true);
@@ -133,7 +133,7 @@ namespace CSLRFIDMobile.ViewModel
             }
             else
             {
-                ReaderModeImage = "rfid.svg";
+                ReaderModeImage = "rfid.png";
                 StartInventoryButtonText = "Start Inventory";
                 ClearButton();
                 SetEvent(true);
@@ -195,7 +195,7 @@ namespace CSLRFIDMobile.ViewModel
         {
             if (_InventoryScanning)
             {
-                _userDialogs.ShowToast("Configuring Reader, Please Wait", null, TimeSpan.FromSeconds(1));
+                _ = _popupService.ShowToastAsync("Configuring Reader, Please Wait", null, TimeSpan.FromSeconds(1));
                 return;
             }
 
@@ -296,7 +296,7 @@ namespace CSLRFIDMobile.ViewModel
         {
             if (_cslReaderService.reader!.barcode.state == CSLibrary.BarcodeReader.STATE.NOTVALID)
             {
-                _userDialogs.ShowSnackbar("Barcode module not exists", null, null, TimeSpan.FromSeconds(1));
+                _ = _popupService.ShowToastAsync("Barcode module not exists", null, TimeSpan.FromSeconds(1));
                 return;
             }
 
@@ -429,7 +429,7 @@ namespace CSLRFIDMobile.ViewModel
                                     break;
 
                                 default:
-                                    _userDialogs.Alert("Last error : 0x" + _cslReaderService.reader?.rfid.LastMacErrorCode.ToString("X4"));
+                                    _ = _popupService.AlertAsync("Last error : 0x" + _cslReaderService.reader?.rfid.LastMacErrorCode.ToString("X4"));
                                     break;
                             }
                         }
@@ -440,12 +440,12 @@ namespace CSLRFIDMobile.ViewModel
                                 case 0x00:  // normal end
                                     break;
 
-                                case 0x0309:    // 
-                                    _userDialogs.Alert("Too near to metal, please move CS108 away from metal and start inventory again.");
+                                case 0x0309:    //
+                                    _ = _popupService.AlertAsync("Too near to metal, please move CS108 away from metal and start inventory again.");
                                     break;
 
                                 default:
-                                    _userDialogs.Alert("Mac error : 0x" + _cslReaderService.reader?.rfid.LastMacErrorCode.ToString("X4"));
+                                    _ = _popupService.AlertAsync("Mac error : 0x" + _cslReaderService.reader?.rfid.LastMacErrorCode.ToString("X4"));
                                     break;
                             }
                         }

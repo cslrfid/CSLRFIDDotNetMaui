@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="CSLRFIDMobile.View.PageTabbedSetting"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:tabView="clr-namespace:Syncfusion.Maui.Toolkit.TabView;assembly=Syncfusion.Maui.Toolkit"
+    Title="Settings">
+    <ContentPage.Content>
+        <tabView:SfTabView
+            IndicatorBackground="{StaticResource Secondary}"
+            IndicatorPlacement="Top"
+            IndicatorStrokeThickness="4"
+            TabBarBackground="{StaticResource Primary}"
+            TabBarHeight="50"
+            TabBarPlacement="Bottom">
+            <tabView:SfTabView.Items>
+                <tabView:SfTabItem
+                    x:Name="OperationTab"
+                    Margin="0,5,0,0"
+                    Header="Operation"
+                    ImagePosition="Left"
+                    ImageSize="32"
+                    ImageSource="ic_operations.png"
+                    TextColor="White">
+                    <tabView:SfTabItem.Content>
+                        <ContentView x:Name="OperationHost" />
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+                <tabView:SfTabItem
+                    x:Name="AdministrationTab"
+                    Margin="0,5,0,0"
+                    Header="Administration"
+                    ImagePosition="Left"
+                    ImageSize="32"
+                    ImageSource="ic_admin.png"
+                    TextColor="White">
+                    <tabView:SfTabItem.Content>
+                        <ContentView x:Name="AdministrationHost" />
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+                <tabView:SfTabItem
+                    x:Name="AntennaTab"
+                    Margin="0,5,0,0"
+                    Header="Antenna"
+                    ImagePosition="Top"
+                    ImageSize="32"
+                    ImageSource="ic_antenna.png"
+                    TextColor="White">
+                    <tabView:SfTabItem.Content>
+                        <ContentView x:Name="AntennaHost" />
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+                <tabView:SfTabItem
+                    x:Name="PowerSequencingTab"
+                    Margin="0,5,0,0"
+                    Header="Sequence"
+                    ImagePosition="Left"
+                    ImageSize="32"
+                    ImageSource="ic_sequence.png"
+                    TextColor="White">
+                    <tabView:SfTabItem.Content>
+                        <ContentView x:Name="PowerSequencingHost" />
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+            </tabView:SfTabView.Items>
+        </tabView:SfTabView>
+    </ContentPage.Content>
+</ContentPage>

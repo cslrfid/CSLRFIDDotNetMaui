@@ -1,5 +1,5 @@
-using Controls.UserDialogs.Maui;
 using CSLRFIDMobile.Services;
+using CSLRFIDMobile.Services.Popups;
 using CSLRFIDMobile.View;
 using Microsoft.Extensions.Logging;
 using TinyMvvm;
@@ -7,6 +7,8 @@ using CSLRFIDMobile.Helper;
 using Plugin.Maui.Audio;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using epj.CircularGauge.Maui;
+using Syncfusion.Maui.Toolkit.Hosting;
+
 
 
 
@@ -29,22 +31,11 @@ namespace CSLRFIDMobile
                 .UseMauiApp<App>()
                 .UseSkiaSharp()
                 .UseCircularGauge()
+                .ConfigureSyncfusionToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                })
-                .UseUserDialogs(true, () =>
-                {
-                    //setup your default styles for dialogs
-                    AlertConfig.DefaultBackgroundColor = Colors.White;
-#if ANDROID
-        AlertConfig.DefaultMessageFontFamily = "OpenSans-Regular.ttf";
-#else
-                    AlertConfig.DefaultMessageFontFamily = "OpenSans-Regular";
-#endif
-
-                    ToastConfig.DefaultCornerRadius = 15;
                 })
                 .ConfigureMauiHandlers(handlers => {
 #if ANDROID
@@ -66,7 +57,16 @@ namespace CSLRFIDMobile
 
             builder.AddAudio();
 
+            // Register popup service
+            builder.Services.AddSingleton<IPopupService, SyncfusionPopupService>();
+
+            // Register app state service
+            builder.Services.AddSingleton<AppStateService>();
+
+            // Register CSL reader service
             builder.Services.AddSingleton<CSLReaderService>();
+
+            // Register view models and pages
             builder.Services.AddSingleton<ViewModelMainMenu>();
             builder.Services.AddSingleton<PageMainMenu>();
             builder.Services.AddTransient<DeviceListViewModel>();
@@ -80,10 +80,11 @@ namespace CSLRFIDMobile
             builder.Services.AddTransient<ViewModelSetting>();
             builder.Services.AddTransient<PageAbout>();
             builder.Services.AddTransient<PageSetting>();
+            builder.Services.AddTransient<PageTabbedSetting>();
             builder.Services.AddTransient<PageSettingAdministration>();
             builder.Services.AddTransient<PageSettingAntenna>();
             builder.Services.AddTransient<PageSettingOperation>();
-            builder.Services.AddTransient<PageSettingPower>();
+            builder.Services.AddTransient<PageSettingPowerSequencing>();
 
             return builder.Build();
         }

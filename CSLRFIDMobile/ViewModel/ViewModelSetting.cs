@@ -1,4 +1,4 @@
-﻿using Controls.UserDialogs.Maui;
+﻿using CSLRFIDMobile.Services.Popups;
 using Plugin.BLE.Abstractions.Contracts;
 using CSLRFIDMobile.Services;
 using CSLRFIDMobile.Model;
@@ -10,7 +10,7 @@ namespace CSLRFIDMobile.ViewModel
     public partial class ViewModelSetting : BaseViewModel
     {
         private readonly CSLReaderService _cslReaderService;
-        private readonly IUserDialogs _userDialogs;
+        private readonly IPopupService _popupService;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsAntennaConfigVisible))]
@@ -38,7 +38,7 @@ namespace CSLRFIDMobile.ViewModel
         [RelayCommand]
         async Task SettingPowerSequencing()
         {
-            await Shell.Current.GoToAsync(nameof(PageSettingPower), true);
+            await Shell.Current.GoToAsync(nameof(PageSettingPowerSequencing), true);
         }
 
         [RelayCommand]
@@ -47,9 +47,9 @@ namespace CSLRFIDMobile.ViewModel
             await Shell.Current.GoToAsync(nameof(PageAbout), true);
         }
 
-        public ViewModelSetting(CSLReaderService appStateService, IUserDialogs userDialogs)
+        public ViewModelSetting(CSLReaderService appStateService, IPopupService popupService)
         {
-            _userDialogs = userDialogs;
+            _popupService = popupService;
             _cslReaderService = appStateService;
 
             switch (_cslReaderService.reader!.rfid.GetModelName())
@@ -88,7 +88,7 @@ namespace CSLRFIDMobile.ViewModel
                 switch (e.type)
                 {
                     case CSLibrary.SiliconLabIC.Constants.AccessCompletedCallbackType.SERIALNUMBER:
-                        _userDialogs.Alert("Serial Number : " + (string)e.info);
+                        _ = _popupService.AlertAsync("Serial Number : " + (string)e.info);
                         break;
                 }
             });

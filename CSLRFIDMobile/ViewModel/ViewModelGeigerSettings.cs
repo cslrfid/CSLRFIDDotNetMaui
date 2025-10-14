@@ -2,14 +2,14 @@
 using System.Windows.Input;
 
 using Plugin.BLE.Abstractions.Contracts;
-using Controls.UserDialogs.Maui;
+using CSLRFIDMobile.Services.Popups;
 using CSLRFIDMobile.Services;
 
 namespace CSLRFIDMobile.ViewModel
 {
     public partial class ViewModelGeigerSettings : BaseViewModel
     {
-        private readonly IUserDialogs _userDialogs;
+        private readonly IPopupService _popupService;
         private readonly CSLReaderService _cslReaderService;
 
         [ObservableProperty]
@@ -20,10 +20,10 @@ namespace CSLRFIDMobile.ViewModel
 
 
 
-        public ViewModelGeigerSettings(CSLReaderService cslReaderService, IUserDialogs userDialogs)
+        public ViewModelGeigerSettings(CSLReaderService cslReaderService, IPopupService popupService)
         {
 
-            _userDialogs = userDialogs;
+            _popupService = popupService;
             _cslReaderService = cslReaderService;
 
             //pre-populate the fields with the saved config
@@ -80,7 +80,7 @@ namespace CSLRFIDMobile.ViewModel
             _cslReaderService.config!.PowerUpperLimitIndBm = int.Parse(UpperLimit);
 
             await _cslReaderService.SaveConfig();
-            _userDialogs.Alert("Configuration Saved");
+            await _popupService.AlertAsync("Configuration Saved");
         }
     }
 }

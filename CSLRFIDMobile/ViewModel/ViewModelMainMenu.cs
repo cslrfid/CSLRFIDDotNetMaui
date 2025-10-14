@@ -1,8 +1,9 @@
-﻿using Controls.UserDialogs.Maui;
-using Plugin.BLE.Abstractions.Contracts;
-using CSLRFIDMobile.Services;
-using Plugin.BLE.Abstractions;
+﻿using CSLRFIDMobile.Services;
+using CSLRFIDMobile.Services.Popups;
 using CSLRFIDMobile.View;
+using Microsoft.Maui.Controls.Shapes;
+using Plugin.BLE.Abstractions;
+using Plugin.BLE.Abstractions.Contracts;
 using static CSLibrary.RFIDDEVICE;
 
 namespace CSLRFIDMobile.ViewModel
@@ -11,7 +12,11 @@ namespace CSLRFIDMobile.ViewModel
     public partial class ViewModelMainMenu : BaseViewModel
     {
         private readonly CSLReaderService _cslReaderService;
-        private readonly IUserDialogs _userDialogs;
+        private readonly IPopupService _popupService;
+        private readonly AppStateService _appStateService;
+
+        private IDispatcherTimer? _scanTimer;
+        private bool _scanInProgress;
 
         [ObservableProperty]
         public string connectedButton = String.Empty;
@@ -20,16 +25,17 @@ namespace CSLRFIDMobile.ViewModel
         [ObservableProperty]
         public bool isBatteryLevelVisible = false;
         [ObservableProperty]
-        public string labelVoltageTextColor = "Black";        
+        public string labelVoltageTextColor = "Black";
         [ObservableProperty]
         public string labelAppVersion = String.Empty;
 
-        public ViewModelMainMenu(CSLReaderService appStateService, IUserDialogs userDialogs)
+        public ViewModelMainMenu(CSLReaderService cslReaderService, IPopupService popupService, AppStateService appStateService)
         {
-            _userDialogs = userDialogs;
-            _cslReaderService = appStateService;
+            _popupService = popupService;
+            _cslReaderService = cslReaderService;
+            _appStateService = appStateService;
 
-            LabelAppVersion = "v1.0";
+            GetPermission();
 
         }
 
@@ -52,14 +58,19 @@ namespace CSLRFIDMobile.ViewModel
 
             await base.OnAppearing();
 
-            CheckConnection();
-
             if (_cslReaderService.reader?.rfid.GetModel() != MODEL.UNKNOWN)
             {
                 _cslReaderService.reader?.rfid.CancelAllSelectCriteria();
             }
             _cslReaderService.reader!.rfid.Options.TagRanging.focus = false;
             _cslReaderService.reader!.rfid.Options.TagRanging.fastid = false;
+
+            await _appStateService!.LoadConfig();
+            _cslReaderService.LinkedReaderSn = _appStateService?.Settings.CSLLinkedDevice ?? String.Empty;
+            CheckConnection();
+
+            // Start auto-reconnect timer if device is paired but disconnected
+            TryStartScanTimer();
 
         }
 
@@ -69,7 +80,10 @@ namespace CSLRFIDMobile.ViewModel
 
             _cslReaderService.adapter.DeviceConnectionLost -= OnDeviceConnectionLost!;
             _cslReaderService.BatteryLevelEvent -= _cslReaderService_BatteryLevelEvent;
-            
+
+            // Stop auto-reconnect timer when leaving page
+            StopScanTimer();
+
         }
 
         // MUST be geant location permission
@@ -93,7 +107,12 @@ namespace CSLRFIDMobile.ViewModel
             }
             else
             {
-                ConnectedButton = "Press to Scan & Connect to Reader";
+                if (!String.IsNullOrEmpty(_appStateService.Settings.CSLLinkedDeviceId))
+                {
+                    ConnectedButton = "Waiting for Linked Reader...\nPress to Select Another Reader";
+                }
+                else
+                    ConnectedButton = "Press to Scan & Connect to Reader";
                 IsBatteryLevelVisible = false;
             }
         }
@@ -102,7 +121,7 @@ namespace CSLRFIDMobile.ViewModel
         {
             if (_cslReaderService.reader?.BLEBusy ?? false)
             {
-                _userDialogs.ShowToast("Configuring Reader, Please Wait", null, TimeSpan.FromSeconds(1));
+                await _popupService.ShowToastAsync("Configuring Reader, Please Wait", null, TimeSpan.FromSeconds(1));
                 return;
             }
 
@@ -122,7 +141,7 @@ namespace CSLRFIDMobile.ViewModel
         {
             if (_cslReaderService.reader?.BLEBusy ?? false)
             {
-                _userDialogs.ShowToast("Configuring Reader, Please Wait", null, TimeSpan.FromSeconds(1));
+                await _popupService.ShowToastAsync("Configuring Reader, Please Wait", null, TimeSpan.FromSeconds(1));
                 return;
             }
             else
@@ -142,7 +161,7 @@ namespace CSLRFIDMobile.ViewModel
         {
             if (_cslReaderService.reader?.BLEBusy ?? false)
             {
-                _userDialogs.ShowToast("Configuring Reader, Please Wait", null, TimeSpan.FromSeconds(1));
+                await _popupService.ShowToastAsync("Configuring Reader, Please Wait", null, TimeSpan.FromSeconds(1));
                 return;
             }
             else
@@ -162,7 +181,7 @@ namespace CSLRFIDMobile.ViewModel
         {
             if (_cslReaderService.reader?.BLEBusy ?? false)
             {
-                _userDialogs.ShowToast("Configuring Reader, Please Wait", null, TimeSpan.FromSeconds(1));
+                await _popupService.ShowToastAsync("Configuring Reader, Please Wait", null, TimeSpan.FromSeconds(1));
                 return;
             }
             else
@@ -173,20 +192,111 @@ namespace CSLRFIDMobile.ViewModel
                     return;
                 }
 
-                await Shell.Current.GoToAsync(nameof(PageSetting), true);
+                await Shell.Current.GoToAsync(nameof(PageTabbedSetting), true);
             }
         }
 
-        void ShowConnectionWarringMessage()
+        async void ShowConnectionWarringMessage()
         {
             string connectWarringMsg = "Reader NOT connected\n\nPlease connect to reader first!!!";
 
-            _userDialogs.ShowSnackbar(connectWarringMsg);
+            await _popupService.ShowToastAsync(connectWarringMsg);
         }
 
         private void OnDeviceConnectionLost(object sender, Plugin.BLE.Abstractions.EventArgs.DeviceErrorEventArgs e)
         {
+            TryStartScanTimer();
             CheckConnection();
+        }
+
+        /// <summary>
+        /// Check preconditions for auto-reconnect timer
+        /// </summary>
+        private bool PreconditionsForTimer()
+        {
+            var id = _appStateService.Settings.CSLLinkedDeviceId;
+            var sn = _appStateService.Settings.CSLLinkedDevice;
+            return !string.IsNullOrWhiteSpace(id) && !string.IsNullOrWhiteSpace(sn);
+        }
+
+        /// <summary>
+        /// Start the auto-reconnect timer
+        /// </summary>
+        private void TryStartScanTimer()
+        {
+            if (!PreconditionsForTimer())
+            {
+                StopScanTimer();
+                return;
+            }
+
+            if (_scanTimer != null)
+                return;
+
+            _scanTimer = Application.Current!.Dispatcher.CreateTimer();
+            _scanTimer.Interval = TimeSpan.FromSeconds(3);
+            _scanTimer.Tick += async (s, e) => await OnScanTimerTickAsync();
+            _scanTimer.Start();
+        }
+
+        /// <summary>
+        /// Stop the auto-reconnect timer
+        /// </summary>
+        private void StopScanTimer()
+        {
+            if (_scanTimer == null)
+                return;
+
+            _scanTimer.Stop();
+            _scanTimer = null;
+        }
+
+        /// <summary>
+        /// Auto-reconnect timer tick handler
+        /// </summary>
+        private async Task OnScanTimerTickAsync()
+        {
+            CheckConnection();
+            if (_scanInProgress)
+                return;
+
+            if (!PreconditionsForTimer())
+            {
+                StopScanTimer();
+                return;
+            }
+
+            try
+            {
+                _scanInProgress = true;
+
+                var found = await _cslReaderService.ScanLinkedDeviceOnceAsync(TimeSpan.FromSeconds(2));
+                if (found == null)
+                    return;
+
+                if (!Guid.TryParse(_appStateService.Settings.CSLLinkedDeviceId, out var id))
+                    return;
+
+                await _popupService.ShowLoadingAsync("Connecting to Reader...");
+                var ok = await _cslReaderService.ConnectDeviceByIdAsync(id);
+                await _popupService.HideLoadingAsync();
+
+                if (ok)
+                {
+                    await _popupService.ShowToastAsync("Connected to reader", duration: TimeSpan.FromSeconds(1));
+                    CheckConnection();
+                    StopScanTimer();
+                }
+            }
+            catch (Exception ex)
+            {
+                await _popupService.HideLoadingAsync();
+                CSLibrary.Debug.WriteLine($"Background reconnect error: {ex.Message}");
+            }
+            finally
+            {
+                _scanInProgress = false;
+            }
         }
 
     }
