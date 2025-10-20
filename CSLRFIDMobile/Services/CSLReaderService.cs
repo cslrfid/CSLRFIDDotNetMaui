@@ -185,16 +185,6 @@ namespace CSLRFIDMobile.Services
                     reader!.siliconlabIC.GetSerialNumberSync().Substring(0, 13) :
                     reader!.siliconlabIC.GetSerialNumberSync().Substring(0, 16);
 
-                // Allow first-time connection if no linked SN stored
-                if (!string.IsNullOrEmpty(LinkedReaderSn) && LinkedReaderSn != deviceSn)
-                {
-                    await _popupService.HideLoadingAsync();
-                    await _popupService.ShowToastAsync("RFID Reader Mismatch", duration: TimeSpan.FromSeconds(1));
-                    await reader!.DisconnectAsync();
-                    IsInitializationCompleted = true;
-                    return;
-                }
-
                 // Cache and persist linked reader info
                 LinkedReaderSn = deviceSn;
                 _appStateService.Settings.CSLLinkedDevice = deviceSn;
