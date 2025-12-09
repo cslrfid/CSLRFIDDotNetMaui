@@ -146,7 +146,7 @@ namespace CSLRFIDMobile.Model
                     //                    if (country == 1)
                     //                        RFID_Profile = 241;
                     //                    else
-                    RFID_Profile = 244;
+                    RFID_Profile = 343;
                     break;
 
                 default:

@@ -27,6 +27,9 @@ namespace CSLRFIDMobile.ViewModel
             _cslReaderService.reader!.barcode.FastBarcodeMode(false);
 
             InventorySetting();
+
+            if (_cslReaderService.reader?.rfid.GetModelName() == "CS463")
+                IsMultiPortReader = true;
         }
 
         [ObservableProperty]
@@ -44,6 +47,9 @@ namespace CSLRFIDMobile.ViewModel
 
         [ObservableProperty]
         public bool switchFlashTagsIsToggled = false;
+
+        [ObservableProperty]
+        public bool isMultiPortReader = false;
 
         public bool IsRfidReaderMode => ReaderModeImage == "rfid.png";
         public bool IsBarcodeReaderMode => ReaderModeImage == "barcode.png";
@@ -385,6 +391,7 @@ namespace CSLRFIDMobile.ViewModel
                             TagInfoList[cnt].Bank1Data = CSLibrary.Tools.Hex.ToString(info.Bank1Data);
                             TagInfoList[cnt].Bank2Data = CSLibrary.Tools.Hex.ToString(info.Bank2Data);
                             TagInfoList[cnt].RSSI = info.rssi;
+                            TagInfoList[cnt].Antenna = info.antennaPort + 1;
 
                             found = true;
                             break;
@@ -400,6 +407,7 @@ namespace CSLRFIDMobile.ViewModel
                         item.Bank1Data = CSLibrary.Tools.Hex.ToString(info.Bank1Data);
                         item.Bank2Data = CSLibrary.Tools.Hex.ToString(info.Bank2Data);
                         item.RSSI = info.rssi;
+                        item.Antenna = info.antennaPort + 1;
 
                         item.PC = info.pc.ToUshorts()[0];
 
