@@ -120,18 +120,18 @@ namespace CSLRFIDMobile.View
             _cslReaderService.config!.Impinj_AuthenticatePassword = entryVerificationpassword.Text;
 
             await _cslReaderService.SaveConfig();
-            await DisplayAlert("Configuration Saved!", "", null, "OK");
+            await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("Configuration Saved!", "", null, "OK");
 
             if (entryReaderName.Text != _cslReaderService.reader!.ReaderName)
             {
                 _cslReaderService.reader!.bluetoothIC.SetDeviceName (entryReaderName.Text);
-                await DisplayAlert("New Reader Name effective after reset CS108", "", null, "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("New Reader Name effective after reset CS108", "", null, "OK");
             }
         }
 
         public async void buttonBatteryLevelFormatClicked(object sender, EventArgs e)
         {
-            var answer = await DisplayActionSheet("View Battery Level Format", "Cancel", null, "Voltage", "Percentage");
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet("View Battery Level Format", "Cancel", null, "Voltage", "Percentage");
 
             if (answer != null && answer !="Cancel")
                 buttonBatteryLevelFormat.Text = answer;
@@ -139,17 +139,17 @@ namespace CSLRFIDMobile.View
 
         public async void buttonShareDataFormatClicked(object sender, EventArgs e)
         {
-            var answer = await DisplayActionSheet("Share Data Format", null, null, _ShareDataFormatOptions);
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet("Share Data Format", null, null, _ShareDataFormatOptions);
 
             if (answer != null)
                 buttonShareDataFormat.Text = answer;
         }
 
-        public void btnBarcodeResetClicked(object sender, EventArgs e)
+        public async void btnBarcodeResetClicked(object sender, EventArgs e)
         {
             if (_cslReaderService.reader!.barcode.state == CSLibrary.BarcodeReader.STATE.NOTVALID)
             {
-                DisplayAlert(null, "Barcode module not exists", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert(null, "Barcode module not exists", "OK");
                 return;
             }
 
@@ -182,12 +182,12 @@ namespace CSLRFIDMobile.View
                 {
 
                     _cslReaderService.reader.bluetoothIC.SetDeviceName("CS108Reader" + macadd.Substring(macadd.Length - 6));
-                    await DisplayAlert("New Reader Name effective after reset CS108", "", null, "OK");
+                    await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("New Reader Name effective after reset CS108", "", null, "OK");
                 }
                 else if (_cslReaderService.reader.rfid.GetModel() == CSLibrary.RFIDDEVICE.MODEL.CS710S)
                 {
                     _cslReaderService.reader.bluetoothIC.SetDeviceName("CS710SReader" + macadd.Substring(macadd.Length - 6));
-                    await DisplayAlert("New Reader Name effective after reset CS710S", "", null, "OK");
+                    await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("New Reader Name effective after reset CS710S", "", null, "OK");
                 }
             }
         }
@@ -199,7 +199,7 @@ namespace CSLRFIDMobile.View
 
         public async void btnFunctionSelectedClicked(object sender, EventArgs e)
         {
-            var answer = await DisplayActionSheet(null,CONFIG.MAINMENUSHORTCUT.FUNCTION.NONE.ToString(), null, CONFIG.MAINMENUSHORTCUT.FUNCTION.INVENTORY.ToString(),CONFIG.MAINMENUSHORTCUT.FUNCTION.BARCODE.ToString());
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet(null,CONFIG.MAINMENUSHORTCUT.FUNCTION.NONE.ToString(), null, CONFIG.MAINMENUSHORTCUT.FUNCTION.INVENTORY.ToString(),CONFIG.MAINMENUSHORTCUT.FUNCTION.BARCODE.ToString());
 
             Button b = (Button)sender;
             b.Text = answer;

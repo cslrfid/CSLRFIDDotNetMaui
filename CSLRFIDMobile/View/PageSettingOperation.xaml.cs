@@ -123,7 +123,7 @@ namespace CSLRFIDMobile.View
             if (ActiveRegionsTextList == null || ActiveRegionsTextList.Length == 0)
                 return;
 
-            var answer = await DisplayActionSheet("Regions", "Cancel", null, ActiveRegionsTextList);
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet("Regions", "Cancel", null, ActiveRegionsTextList);
 
             if (answer != null && answer != "Cancel")
             {
@@ -153,7 +153,7 @@ namespace CSLRFIDMobile.View
         {
             string answer;
 
-            answer = await DisplayActionSheet("Frequence Channel Order", "Cancel", null, _freqOrderOptions);
+            answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet("Frequence Channel Order", "Cancel", null, _freqOrderOptions);
 
             if (answer != null && answer != "Cancel")
                 buttonFrequencyOrder.Text = answer;
@@ -174,7 +174,7 @@ namespace CSLRFIDMobile.View
             if (ActiveFrequencyTextList == null || ActiveFrequencyTextList.Length == 0)
                 return;
 
-            var answer = await DisplayActionSheet("Frequency Channel Order", "Cancel", null, ActiveFrequencyTextList);
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet("Frequency Channel Order", "Cancel", null, ActiveFrequencyTextList);
 
             if (answer != null && answer != "Cancel")
                 buttonFixedChannel.Text = answer;
@@ -193,7 +193,7 @@ namespace CSLRFIDMobile.View
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Power", "Power can only be set to 320 or below", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("Power", "Power can only be set to 320 or below", "OK");
                 entryPower.Text = "300";
             }
         }
@@ -211,7 +211,7 @@ namespace CSLRFIDMobile.View
             }
             catch (Exception ex)
             {
-                await DisplayAlert("", "Value not valid!!!", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("", "Value not valid!!!", "OK");
                 tagPopulation = 60;
                 entryTagPopulation.Text = "60";
             }
@@ -232,7 +232,7 @@ namespace CSLRFIDMobile.View
             }
             catch (Exception ex)
             {
-                await DisplayAlert("", "Value not valid!!!", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("", "Value not valid!!!", "OK");
                 Q = 7;
                 entryQOverride.Text = "7";
             }
@@ -268,7 +268,7 @@ namespace CSLRFIDMobile.View
             }
             catch (Exception ex)
             {
-                await DisplayAlert("", "Value not valid!!!", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("", "Value not valid!!!", "OK");
                 entryDuplicateEliminationRollingWindow.Text = "0";
             }
         }
@@ -286,7 +286,7 @@ namespace CSLRFIDMobile.View
             }
             catch (Exception ex)
             {
-                await DisplayAlert("", "Value not valid!!!", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("", "Value not valid!!!", "OK");
                 entryCompactInventoryDelay.Text = "0";
             }
         }
@@ -304,7 +304,7 @@ namespace CSLRFIDMobile.View
             }
             catch (Exception ex)
             {
-                await DisplayAlert("", "Value not valid!!!", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("", "Value not valid!!!", "OK");
                 entryIntraPacketDelay.Text = "0";
             }
         }
@@ -454,14 +454,14 @@ namespace CSLRFIDMobile.View
             }
             catch (Exception ex)
             {
-                await DisplayAlert("", "Value not valid!!!", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("", "Value not valid!!!", "OK");
                 entryInventoryDuration.Text = "0";
             }
         }
 
         public async void buttonSessionClicked(object sender, EventArgs e)
         {
-            var answer = await DisplayActionSheet("Session", "Cancel", null, "S0", "S1", "S2", "S3"); // S2 S3
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet("Session", "Cancel", null, "S0", "S1", "S2", "S3"); // S2 S3
 
             if (answer != null && answer !="Cancel")
                 buttonSession.Text = answer;
@@ -469,7 +469,7 @@ namespace CSLRFIDMobile.View
 
         public async void buttonTargetClicked(object sender, EventArgs e)
         {
-            var answer = await DisplayActionSheet(null, "Cancel", null, "A", "B", "Toggle A/B");
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet(null, "Cancel", null, "A", "B", "Toggle A/B");
 
             if (answer != null && answer !="Cancel")
                 buttonTarget.Text = answer;
@@ -477,7 +477,7 @@ namespace CSLRFIDMobile.View
 
         public async void buttonAlgorithmClicked(object sender, EventArgs e)
         {
-            var answer = await DisplayAlert("Algorithm", "", "DYNAMICQ", "FIXEDQ");
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("Algorithm", "", "DYNAMICQ", "FIXEDQ");
             buttonAlgorithm.Text = answer ? "DYNAMICQ" : "FIXEDQ";
         }
 
@@ -504,7 +504,7 @@ namespace CSLRFIDMobile.View
             if (_profileList == null || _profileList.Length == 0)
                 return;
 
-            var answer = await DisplayActionSheet(null, "Cancel", null, _profileList);
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet(null, "Cancel", null, _profileList);
 
             if (answer != null && answer != "Cancel")
             {
