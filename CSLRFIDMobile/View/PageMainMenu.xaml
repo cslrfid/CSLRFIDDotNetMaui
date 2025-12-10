@@ -66,7 +66,8 @@
             </Grid>
         </Border>
 
-        <Border
+        <!--TODO-->
+        <!--<Border
             Grid.Row="2"
             Grid.Column="0"
             Margin="5,2.5,2.5,2.5"
@@ -94,9 +95,10 @@
                     Text="Register"
                     TextColor="{StaticResource White}" />
             </Grid>
-        </Border>
+        </Border>-->
 
-        <Border
+        <!--TODO-->
+        <!--<Border
             Grid.Row="1"
             Grid.Column="1"
             Margin="2.5,2.5,5,2.5"
@@ -124,9 +126,10 @@
                     Text="Special Functions"
                     TextColor="{StaticResource White}" />
             </Grid>
-        </Border>
+        </Border>-->
 
-        <Border
+        <!--TODO-->
+        <!--<Border
             Grid.Row="2"
             Grid.Column="0"
             Margin="5,2.5,2.5,2.5"
@@ -154,7 +157,7 @@
                     Text="Read/Write"
                     TextColor="{StaticResource White}" />
             </Grid>
-        </Border>
+        </Border>-->
 
         <Border
             Grid.Row="1"
@@ -186,7 +189,8 @@
             </Grid>
         </Border>
 
-        <Border
+        <!--TODO-->
+        <!--<Border
             Grid.Row="3"
             Grid.Column="0"
             Margin="5,2.5,2.5,2.5"
@@ -214,9 +218,10 @@
                     Text="Security"
                     TextColor="{StaticResource White}" />
             </Grid>
-        </Border>
+        </Border>-->
 
-        <Border
+        <!--TODO-->
+        <!--<Border
             Grid.Row="3"
             Grid.Column="1"
             Margin="2.5,2.5,5,2.5"
@@ -244,7 +249,7 @@
                     Text="RFID Filter"
                     TextColor="{StaticResource White}" />
             </Grid>
-        </Border>
+        </Border>-->
 
         <Border
             Grid.Row="4"

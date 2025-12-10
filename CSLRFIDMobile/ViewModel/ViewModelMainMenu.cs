@@ -34,9 +34,6 @@ namespace CSLRFIDMobile.ViewModel
             _popupService = popupService;
             _cslReaderService = cslReaderService;
             _appStateService = appStateService;
-
-            GetPermission();
-
         }
 
         private void _cslReaderService_BatteryLevelEvent(object? sender, CSLBatteryLevelEventArgs e)
@@ -84,18 +81,6 @@ namespace CSLRFIDMobile.ViewModel
             // Stop auto-reconnect timer when leaving page
             StopScanTimer();
 
-        }
-
-        // MUST be geant location permission
-        private async void GetPermission()
-        {
-            if (DeviceInfo.Current.Platform == DevicePlatform.Android)
-            {
-                while (await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>() != PermissionStatus.Granted)
-                {                 
-                    await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
-                }
-            }
         }
 
         private void CheckConnection()
@@ -216,7 +201,7 @@ namespace CSLRFIDMobile.ViewModel
         {
             var id = _appStateService.Settings.CSLLinkedDeviceId;
             var sn = _appStateService.Settings.CSLLinkedDevice;
-            return !string.IsNullOrWhiteSpace(id) && !string.IsNullOrWhiteSpace(sn);
+            return !string.IsNullOrWhiteSpace(id) /*&& !string.IsNullOrWhiteSpace(sn)*/;
         }
 
         /// <summary>

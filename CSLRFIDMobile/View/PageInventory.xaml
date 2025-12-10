@@ -35,7 +35,8 @@
                 <StackLayout Padding="10,5,0,5" BackgroundColor="#cccccc">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.8*" />
+                            <ColumnDefinition Width="0.6*" />
+                            <ColumnDefinition Width="0.2*" />
                             <ColumnDefinition Width="0.2*" />
                         </Grid.ColumnDefinitions>
                         <Label
@@ -45,6 +46,12 @@
                             VerticalTextAlignment="Center" />
                         <Label
                             Grid.Column="1"
+                            FontSize="Small"
+                            Text="Port"
+                            IsVisible="{Binding IsMultiPortReader}"
+                            VerticalTextAlignment="Center" />
+                        <Label
+                            Grid.Column="2"
                             FontSize="Small"
                             HorizontalTextAlignment="Start"
                             Text="RSSI"
@@ -59,7 +66,8 @@
                         <StackLayout Orientation="Vertical">
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="0.8*" />
+                                    <ColumnDefinition Width="0.6*" />
+                                    <ColumnDefinition Width="0.2*" />
                                     <ColumnDefinition Width="0.2*" />
                                 </Grid.ColumnDefinitions>
                                 <Label
@@ -69,6 +77,12 @@
                                     VerticalTextAlignment="Center" />
                                 <Label
                                     Grid.Column="1"
+                                    FontSize="Small"
+                                    Text="{Binding Antenna}"
+                                    IsVisible="{Binding IsMultiPortReader}"
+                                    VerticalTextAlignment="Center" />                                
+                                <Label
+                                    Grid.Column="2"
                                     HorizontalTextAlignment="Start"
                                     Text="{Binding RSSI}"
                                     VerticalTextAlignment="Center" />

@@ -33,7 +33,10 @@ namespace CSLRFIDMobile.View
 
             ActiveRegionsTextList = _cslReaderService.reader!.rfid.GetActiveCountryNameList();
             ActiveFrequencyList = _cslReaderService.reader!.rfid.GetAvailableFrequencyTable();
-            ActiveFrequencyTextList = ActiveFrequencyList.OfType<object>().Select(o => o.ToString() + " MHz").ToArray();
+            if (ActiveFrequencyList != null && ActiveFrequencyList.Length > 0)
+                ActiveFrequencyTextList = ActiveFrequencyList.OfType<object>().Select(o => o.ToString() + " MHz").ToArray();
+            else
+                ActiveFrequencyTextList = new string[] { "N/A" };
             buttonRegion.Text = _cslReaderService.config!.RFID_Region;
 
             switch (_cslReaderService.config!.RFID_FrequenceSwitch)
@@ -46,16 +49,16 @@ namespace CSLRFIDMobile.View
                     break;
             }
 
-            if (ActiveRegionsTextList.Count() == 1)
+            if (ActiveRegionsTextList == null || ActiveRegionsTextList.Count() == 1)
                 buttonRegion.IsEnabled = false;
 
 //            if (_freqOrderOptions.Length == 1)
                 buttonFrequencyOrder.IsEnabled = false;
 
-            if (_cslReaderService.config!.RFID_FixedChannel == -1)
-                buttonFixedChannel.Text = ActiveFrequencyTextList[0];
-            else
-                buttonFixedChannel.Text = ActiveFrequencyTextList[_cslReaderService.config!.RFID_FixedChannel];
+            int fixedChannelIndex = _cslReaderService.config!.RFID_FixedChannel;
+            if (fixedChannelIndex < 0 || fixedChannelIndex >= ActiveFrequencyTextList.Length)
+                fixedChannelIndex = 0;
+            buttonFixedChannel.Text = ActiveFrequencyTextList[fixedChannelIndex];
 
             checkbuttonFixedChannel();
 
@@ -99,19 +102,28 @@ namespace CSLRFIDMobile.View
             switchQDecreaseUseQuery.IsToggled = _cslReaderService.config!.RFID_DynamicQParms.QDecreaseUseQuery;
             entryNoEPCMaxQ.Text = _cslReaderService.config!.RFID_DynamicQParms.NoEPCMaxQ.ToString();
 
-            foreach (string profilestr in _profileList)
-                if (uint.Parse(profilestr.Substring(0, 3)) == _cslReaderService.config!.RFID_Profile)
+            if (_profileList != null && _profileList.Length > 0)
+            {
+                foreach (string profilestr in _profileList)
                 {
-                    buttonProfile.Text = profilestr;
-                    break;
+                    int colonIndex = profilestr.IndexOf(":");
+                    if (colonIndex > 0 && uint.Parse(profilestr.Substring(0, colonIndex)) == _cslReaderService.config!.RFID_Profile)
+                    {
+                        buttonProfile.Text = profilestr;
+                        break;
+                    }
                 }
+            }
 
             SetQvalue();
         }
 
         public async void buttonRegionClicked(object sender, EventArgs e)
         {
-            var answer = await DisplayActionSheet("Regions", "Cancel", null, ActiveRegionsTextList);
+            if (ActiveRegionsTextList == null || ActiveRegionsTextList.Length == 0)
+                return;
+
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet("Regions", "Cancel", null, ActiveRegionsTextList);
 
             if (answer != null && answer != "Cancel")
             {
@@ -123,15 +135,17 @@ namespace CSLRFIDMobile.View
                 {
                     if (ActiveRegionsTextList[cnt] == answer)
                     {
-                        ActiveFrequencyList = _cslReaderService.reader!.rfid.GetAvailableFrequencyTable(ActiveRegionsTextList[cnt]).ToArray();
+                        var freqTable = _cslReaderService.reader!.rfid.GetAvailableFrequencyTable(ActiveRegionsTextList[cnt]);
+                        ActiveFrequencyList = freqTable != null ? freqTable.ToArray() : new double[0];
                         break;
                     }
                 }
-                if (cnt == ActiveRegionsTextList.Length)
+                if (cnt == ActiveRegionsTextList.Length || ActiveFrequencyList == null || ActiveFrequencyList.Length == 0)
                     ActiveFrequencyList = new double[1] { 0.0 };
 
-                ActiveFrequencyTextList = ActiveFrequencyList.OfType<object>().Select(o => o.ToString()).ToArray()!;
-                buttonFixedChannel.Text = ActiveFrequencyTextList[0];
+                ActiveFrequencyTextList = ActiveFrequencyList.OfType<object>().Select(o => o.ToString() + " MHz").ToArray();
+                if (ActiveFrequencyTextList.Length > 0)
+                    buttonFixedChannel.Text = ActiveFrequencyTextList[0];
             }
         }
 
@@ -139,7 +153,7 @@ namespace CSLRFIDMobile.View
         {
             string answer;
 
-            answer = await DisplayActionSheet("Frequence Channel Order", "Cancel", null, _freqOrderOptions);
+            answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet("Frequence Channel Order", "Cancel", null, _freqOrderOptions);
 
             if (answer != null && answer != "Cancel")
                 buttonFrequencyOrder.Text = answer;
@@ -157,7 +171,10 @@ namespace CSLRFIDMobile.View
 
         public async void buttonFixedChannelClicked(object sender, EventArgs e)
         {
-            var answer = await DisplayActionSheet("Frequency Channel Order", "Cancel", null, ActiveFrequencyTextList);
+            if (ActiveFrequencyTextList == null || ActiveFrequencyTextList.Length == 0)
+                return;
+
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet("Frequency Channel Order", "Cancel", null, ActiveFrequencyTextList);
 
             if (answer != null && answer != "Cancel")
                 buttonFixedChannel.Text = answer;
@@ -170,13 +187,13 @@ namespace CSLRFIDMobile.View
             try
             {
                 value = uint.Parse(entryPower.Text);
-                if (value < 0 || value > 330)
-                    throw new System.ArgumentException("Value not valid", "tagPopulation");
+                if (value < 0 || value > 320)
+                    throw new System.ArgumentException("Power can only be set to 320 or below", "Power");
                 entryPower.Text = value.ToString();
             }
             catch (Exception ex)
             {
-                await DisplayAlert("", "Value not valid!!!", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("Power", "Power can only be set to 320 or below", "OK");
                 entryPower.Text = "300";
             }
         }
@@ -194,7 +211,7 @@ namespace CSLRFIDMobile.View
             }
             catch (Exception ex)
             {
-                await DisplayAlert("", "Value not valid!!!", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("", "Value not valid!!!", "OK");
                 tagPopulation = 60;
                 entryTagPopulation.Text = "60";
             }
@@ -215,7 +232,7 @@ namespace CSLRFIDMobile.View
             }
             catch (Exception ex)
             {
-                await DisplayAlert("", "Value not valid!!!", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("", "Value not valid!!!", "OK");
                 Q = 7;
                 entryQOverride.Text = "7";
             }
@@ -251,7 +268,7 @@ namespace CSLRFIDMobile.View
             }
             catch (Exception ex)
             {
-                await DisplayAlert("", "Value not valid!!!", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("", "Value not valid!!!", "OK");
                 entryDuplicateEliminationRollingWindow.Text = "0";
             }
         }
@@ -269,7 +286,7 @@ namespace CSLRFIDMobile.View
             }
             catch (Exception ex)
             {
-                await DisplayAlert("", "Value not valid!!!", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("", "Value not valid!!!", "OK");
                 entryCompactInventoryDelay.Text = "0";
             }
         }
@@ -287,7 +304,7 @@ namespace CSLRFIDMobile.View
             }
             catch (Exception ex)
             {
-                await DisplayAlert("", "Value not valid!!!", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("", "Value not valid!!!", "OK");
                 entryIntraPacketDelay.Text = "0";
             }
         }
@@ -330,16 +347,23 @@ namespace CSLRFIDMobile.View
                     break;
             }
 
-            for (cnt = 0; cnt < ActiveFrequencyTextList.Length; cnt++)
+            if (ActiveFrequencyTextList != null && ActiveFrequencyTextList.Length > 0)
             {
-                if (buttonFixedChannel.Text == ActiveFrequencyTextList[cnt])
+                for (cnt = 0; cnt < ActiveFrequencyTextList.Length; cnt++)
                 {
-                    _cslReaderService.config!.RFID_FixedChannel = cnt;
-                    break;
+                    if (buttonFixedChannel.Text == ActiveFrequencyTextList[cnt])
+                    {
+                        _cslReaderService.config!.RFID_FixedChannel = cnt;
+                        break;
+                    }
                 }
+                if (cnt == ActiveFrequencyTextList.Length)
+                    _cslReaderService.config!.RFID_FixedChannel = 0;
             }
-            if (cnt == ActiveFrequencyTextList.Length)
+            else
+            {
                 _cslReaderService.config!.RFID_FixedChannel = 0;
+            }
 
             _cslReaderService.config!.RFID_Antenna_Power[0] = UInt16.Parse(entryPower.Text);
             _cslReaderService.config!.RFID_Antenna_Dwell[0] = UInt16.Parse(entryInventoryDuration.Text);
@@ -408,7 +432,9 @@ namespace CSLRFIDMobile.View
             _cslReaderService.config!.RFID_DynamicQParms.MinQCycles = uint.Parse(entryMinQCycled.Text);
             _cslReaderService.config!.RFID_DynamicQParms.NoEPCMaxQ = uint.Parse(entryNoEPCMaxQ.Text);
 
-            _cslReaderService.config!.RFID_Profile = UInt16.Parse(buttonProfile.Text.Substring(0, 3));
+            int colonIndex = buttonProfile.Text.IndexOf(":");
+            if (colonIndex > 0)
+                _cslReaderService.config!.RFID_Profile = UInt16.Parse(buttonProfile.Text.Substring(0, colonIndex));
 
             await _cslReaderService.SaveConfig();
 
@@ -428,14 +454,14 @@ namespace CSLRFIDMobile.View
             }
             catch (Exception ex)
             {
-                await DisplayAlert("", "Value not valid!!!", "OK");
+                await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("", "Value not valid!!!", "OK");
                 entryInventoryDuration.Text = "0";
             }
         }
 
         public async void buttonSessionClicked(object sender, EventArgs e)
         {
-            var answer = await DisplayActionSheet("Session", "Cancel", null, "S0", "S1", "S2", "S3"); // S2 S3
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet("Session", "Cancel", null, "S0", "S1", "S2", "S3"); // S2 S3
 
             if (answer != null && answer !="Cancel")
                 buttonSession.Text = answer;
@@ -443,7 +469,7 @@ namespace CSLRFIDMobile.View
 
         public async void buttonTargetClicked(object sender, EventArgs e)
         {
-            var answer = await DisplayActionSheet(null, "Cancel", null, "A", "B", "Toggle A/B");
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet(null, "Cancel", null, "A", "B", "Toggle A/B");
 
             if (answer != null && answer !="Cancel")
                 buttonTarget.Text = answer;
@@ -451,7 +477,7 @@ namespace CSLRFIDMobile.View
 
         public async void buttonAlgorithmClicked(object sender, EventArgs e)
         {
-            var answer = await DisplayAlert("Algorithm", "", "DYNAMICQ", "FIXEDQ");
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayAlert("Algorithm", "", "DYNAMICQ", "FIXEDQ");
             buttonAlgorithm.Text = answer ? "DYNAMICQ" : "FIXEDQ";
         }
 
@@ -475,7 +501,10 @@ namespace CSLRFIDMobile.View
 
         public async void buttonProfileClicked(object sender, EventArgs e)
         {
-            var answer = await DisplayActionSheet(null, "Cancel", null, _profileList);
+            if (_profileList == null || _profileList.Length == 0)
+                return;
+
+            var answer = await (Application.Current!.Windows[0].Page as Page)!.DisplayActionSheet(null, "Cancel", null, _profileList);
 
             if (answer != null && answer != "Cancel")
             {
@@ -483,7 +512,8 @@ namespace CSLRFIDMobile.View
 
                 if (_cslReaderService.reader!.rfid.GetModel() == CSLibrary.RFIDDEVICE.MODEL.CS108)
                 {
-                    if (uint.Parse(answer.Substring(0, 3)) == 3)
+                    int colonIndex = answer.IndexOf(":");
+                    if (colonIndex > 0 && uint.Parse(answer.Substring(0, colonIndex)) == 3)
                         entryCompactInventoryDelay.Text = "2";
                     else
                         entryCompactInventoryDelay.Text = "0";

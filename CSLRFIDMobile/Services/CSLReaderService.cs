@@ -98,7 +98,7 @@ namespace CSLRFIDMobile.Services
 
                 await Connect(dev, device.BTServiceType);
                 DateTime timer = DateTime.Now;
-                while ((DateTime.Now - timer).TotalSeconds < 10.00 )
+                while ((DateTime.Now - timer).TotalSeconds < 20.00 )
                 {
                     if (IsInitializationCompleted)
                         break;
@@ -181,15 +181,22 @@ namespace CSLRFIDMobile.Services
             if (e.state == CSLibrary.Constants.RFState.INITIALIZATION_COMPLETE)
             {
                 // Get device serial number for validation
-                string deviceSn = reader?.rfid.GetModelName() == "CS108" ?
-                    reader!.siliconlabIC.GetSerialNumberSync().Substring(0, 13) :
-                    reader!.siliconlabIC.GetSerialNumberSync().Substring(0, 16);
+                string deviceType = reader?.rfid.GetModelName() ?? String.Empty;
+                string deviceSn;
+                if (deviceType == "CS108")
+                    deviceSn = reader?.siliconlabIC.GetSerialNumberSync().Substring(0, 13) ?? String.Empty;
+                else if (deviceType == "CS710S")
+                    deviceSn = reader?.siliconlabIC.GetSerialNumberSync().Substring(0, 16) ?? String.Empty;
+                else
+                    deviceSn = String.Empty;
+
 
                 // Cache and persist linked reader info
                 LinkedReaderSn = deviceSn;
-                _appStateService.Settings.CSLLinkedDevice = deviceSn;
+                _appStateService.Settings.CSLLinkedDevice = LinkedReaderSn;
                 _appStateService.Settings.CSLLinkedDeviceId = deviceinfo?.Id.ToString() ?? string.Empty;
                 await _appStateService.SaveConfig();
+
 
                 if (reader!.rfid.GetModelName() == "CS710S-1" && config!.RFID_Profile == 244)
                     config.RFID_Profile = 241;

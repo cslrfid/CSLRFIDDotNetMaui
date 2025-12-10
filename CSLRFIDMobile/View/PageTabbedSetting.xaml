@@ -42,7 +42,7 @@
                     x:Name="AntennaTab"
                     Margin="0,5,0,0"
                     Header="Antenna"
-                    ImagePosition="Top"
+                    ImagePosition="Left"
                     ImageSize="32"
                     ImageSource="ic_antenna.png"
                     TextColor="White">

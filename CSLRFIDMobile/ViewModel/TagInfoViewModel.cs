@@ -36,6 +36,8 @@ namespace CSLRFIDMobile.ViewModel
         public string _Channel = String.Empty;
         [ObservableProperty]
         public UInt16 _PC;
+        [ObservableProperty]
+        public uint _Antenna = 0;
 
         public DateTime timeOfRead;
     }
