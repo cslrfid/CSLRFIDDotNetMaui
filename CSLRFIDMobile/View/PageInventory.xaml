@@ -9,13 +9,21 @@
     xmlns:mvvm="clr-namespace:TinyMvvm;assembly=TinyMvvm.Maui"
     xmlns:viewmodel="clr-namespace:CSLRFIDMobile.ViewModel"
     Title="Inventory">
-    <mvvm:TinyView.ToolbarItems>
-        <ToolbarItem
-            Command="{Binding ReadModeChangeCommand}"
-            IconImageSource="{Binding ReaderModeImage}"
-            Order="Primary"
-            Priority="0" />
-    </mvvm:TinyView.ToolbarItems>
+    <Shell.TitleView>
+        <Grid VerticalOptions="Center">
+            <Label
+                FontSize="Title"
+                Text="Inventory"
+                TextColor="White"
+                VerticalTextAlignment="Center" />
+            <ImageButton
+                Command="{Binding ReadModeChangeCommand}"
+                HeightRequest="30"
+                HorizontalOptions="End"
+                Source="{Binding ReaderModeImage}"
+                WidthRequest="30" />
+        </Grid>
+    </Shell.TitleView>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />

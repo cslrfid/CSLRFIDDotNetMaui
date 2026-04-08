@@ -28,7 +28,7 @@
     </Shell.Resources>
 
     <Shell.TitleView>
-        <HorizontalStackLayout Spacing="10" VerticalOptions="FillAndExpand">
+        <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
             <Image
                 x:Name="TitleBarImage"
                 HeightRequest="32"
