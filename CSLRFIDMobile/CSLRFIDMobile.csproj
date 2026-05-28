@@ -20,7 +20,7 @@
 		<ApplicationId>com.csl.cslrfidmobile</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>1.4.0</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>1.5.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>		
