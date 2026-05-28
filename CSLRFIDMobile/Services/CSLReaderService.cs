@@ -221,11 +221,11 @@ namespace CSLRFIDMobile.Services
                     }
                 }
 
-                uint portNum = reader.rfid.GetAntennaPort();
+                uint portNum = (uint)reader.rfid.GetAntennaPort();
                 for (uint cnt = 0; cnt < portNum; cnt++)
                 {
                     reader.rfid.SetAntennaPortState(cnt, config.RFID_AntennaEnable[cnt] ? CSLibrary.Constants.AntennaPortState.ENABLED : CSLibrary.Constants.AntennaPortState.DISABLED);
-                    reader.rfid.SetPowerLevel(config.RFID_Antenna_Power[cnt], cnt);
+                    reader.rfid.SetPowerLevel(config.RFID_Antenna_Power[cnt], (int)cnt);
                     reader.rfid.SetInventoryDuration(config.RFID_Antenna_Dwell[cnt], cnt);
                 }
 

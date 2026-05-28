@@ -79,7 +79,7 @@ namespace CSLRFIDMobile.View
             for (uint cnt = 0; cnt < 4; cnt++)
             {
                 _cslReaderService.reader!.rfid.SetAntennaPortState(cnt, _cslReaderService.config!.RFID_AntennaEnable[cnt] ? CSLibrary.Constants.AntennaPortState.ENABLED : CSLibrary.Constants.AntennaPortState.DISABLED);
-                _cslReaderService.reader!.rfid.SetPowerLevel(_cslReaderService.config!.RFID_Antenna_Power[cnt], cnt);
+                _cslReaderService.reader!.rfid.SetPowerLevel(_cslReaderService.config!.RFID_Antenna_Power[cnt], (int)cnt);
                 _cslReaderService.reader!.rfid.SetInventoryDuration(_cslReaderService.config!.RFID_Antenna_Dwell[cnt], cnt);
             }
         }
