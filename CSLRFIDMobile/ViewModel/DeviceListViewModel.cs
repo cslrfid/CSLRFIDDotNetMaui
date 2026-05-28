@@ -69,7 +69,7 @@ namespace CSLRFIDMobile.ViewModel
 
             try
             {
-                _ = _cslReaderService.reader?.DisconnectAsync()!;
+                _cslReaderService.reader?.DisconnectAsync();
             }
             catch (Exception ex)
             {
