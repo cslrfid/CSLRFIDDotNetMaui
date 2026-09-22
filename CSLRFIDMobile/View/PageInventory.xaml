@@ -105,6 +105,7 @@
         <ListView
             x:Name="ListViewBarcodeData"
             Grid.Row="0"
+            HasUnevenRows="True"
             IsVisible="{Binding IsBarcodeReaderMode}"
             ItemsSource="{Binding BarcodeData}">
             <ListView.Header>
@@ -122,7 +123,7 @@
                         <Label
                             Grid.Column="1"
                             FontSize="Small"
-                            HorizontalTextAlignment="Start"
+                            HorizontalTextAlignment="Center"
                             Text="Count"
                             VerticalTextAlignment="Center" />
                     </Grid>
@@ -142,12 +143,12 @@
                                     Grid.Column="0"
                                     FontSize="Small"
                                     Text="{Binding Code}"
-                                    VerticalTextAlignment="Center" />
+                                    VerticalTextAlignment="Start" />
                                 <Label
                                     Grid.Column="1"
-                                    HorizontalTextAlignment="Start"
+                                    HorizontalTextAlignment="Center"
                                     Text="{Binding Count}"
-                                    VerticalTextAlignment="Center" />
+                                    VerticalTextAlignment="Start" />
                             </Grid>
                         </StackLayout>
                     </helper:CustomViewCell>
